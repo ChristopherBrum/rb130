@@ -50,5 +50,5 @@
   - A block passed in at method invocation is a _implicit argument_ not included in the method definition.
 - What is a block parameter and block local variable and what is special about the latter?
 - Can you pass an argument to a block using the `yield` keyword?
-- What is _arity_?
+- What is _arity_ and whats the difference between lenient and strict?
 - What happens when you pass more/less arguments than the block has calling for?
