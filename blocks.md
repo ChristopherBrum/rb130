@@ -2,18 +2,43 @@
 
 - Closures in Ruby
   - closure
-  - `Proc` object
-  - Lambda
-  - block
+  - `Proc` objects, **Lambdas**, and **Blocks**
   - binding
-  - 3 main ways to work with closures
-    - Instantiating an object from the Proc class
-    - Using lambdas
-    - Using blocks
-
+  - Main ways to work with closures
 - Calling methods with blocks
+  - What?
+  - How?
+  - Why?
+  - What can you do within a block?
 - Writing methods that take blocks
-  - yielding
+  - What?
+  - How?
+  - Why?
+  - Yielding
+    - `yield` keyword
+    - `LocalJumpError`
+    - Making yield optional
+  - Passing execution to the block
+  - Yielding with an Argument
+    - Block parameter vs Block local variable
+    - Arguments passed to a block vs passed to a method
+    - **Arity**
+  - Return value of yielding to the block
+  - When to use blocks in your own methods
+    - Defer some implementation details til implementations
+    - Before and After action: Sandwich code
+  - Methods with an explicit block parameter
+  - Using closures
+
+Key Points
+
+- blocks are one way that Ruby implements closures. Closures are a way to pass around an unnamed "chunk of code" to be executed later.
+- blocks can take arguments, just like normal methods. But unlike normal methods, it won't complain about wrong number of arguments passed to it.
+- blocks return a value, just like normal methods.
+- blocks are a way to defer some implementation decisions to method invocation time. It allows method callers to refine a method at invocation time for a specific use case. It allows method implementors to build generic methods that can be used in a variety of ways.
+- blocks are a good use case for "sandwich code" scenarios, like closing a File automatically.
+- methods and blocks can return a chunk of code by returning a Proc or lambda.
+
 - Build a "times" method from scratch
 - Build an "each" method from scratch
 - Build an "select" method from scratch
