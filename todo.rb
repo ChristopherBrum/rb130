@@ -62,7 +62,7 @@ class TodoList
   end
 
   def validate_todo(todo)
-    raise TypeError.new("Can only add Todo objects") unless todo.class == Todo
+    raise TypeError.new("Can only add Todo objects") unless todo.instance_of? Todo
   end
 
   def <<(todo)
@@ -114,8 +114,7 @@ class TodoList
   end
 
   def remove_at(index)
-    todos.fetch(index)
-    todos.delete_at(index)
+    todos.delete_at(item_at(index))
   end
 
   def to_s
