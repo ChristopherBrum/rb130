@@ -1,7 +1,3 @@
-# This class represents a todo item and its associated
-# data: name and description. There's also a "done"
-# flag to show whether this todo item is done.
-
 class Todo
   DONE_MARKER = 'X'
   UNDONE_MARKER = ' '
@@ -36,10 +32,6 @@ class Todo
       done == otherTodo.done
   end
 end
-
-# This class represents a collection of Todo objects.
-# You can perform typical collection-oriented actions
-# on a TodoList object, including iteration and selection.
 
 class TodoList
   attr_accessor :title
@@ -80,8 +72,12 @@ class TodoList
     todos.last
   end
 
-  def to_a
-    todos
+  def shift
+    todos.shift
+  end
+
+  def pop
+    todos.pop
   end
 
   def done?
@@ -104,14 +100,6 @@ class TodoList
     todos.each { |todo| todo.done! }
   end
 
-  def shift
-    todos.shift
-  end
-
-  def pop
-    todos.pop
-  end
-
   def remove_at(index)
     todos.delete_at(item_at(index))
   end
@@ -122,26 +110,61 @@ class TodoList
     str
   end
 
+  def to_a
+    todos
+  end
+
   def each
     counter = 0
-
+    
     while counter < todos.size
       yield(todos[counter])
-
       counter += 1
     end
-
+    
     self
   end
 
   def select
     selected = TodoList.new('selected todos')
-
+    
     todos.each do |todo|
       selected << todo if yield(todo)
     end
-
+    
     selected
+  end
+
+  def find_by_title(search_title)
+    todos.each do |todo|
+      return todo if todo.title == search_title
+    end
+    
+    nil
+  end
+
+  def all_done
+    todos.select { |todo| todo.done? }
+  end
+
+  def not_all_done
+    todos.select { |todo| !todo.done? }
+  end
+
+  def mark_done(search_title)
+    todo_match = find_by_title(search_title)
+
+    if todo_match
+      mark_done_at(todos.index(todo_match))
+    end
+  end
+  
+  def mark_all_done
+    todos.each { |todo| todo.done! }
+  end
+
+  def mark_all_undone
+    todos.each { |todo| todo.undone! }
   end
 
   private
