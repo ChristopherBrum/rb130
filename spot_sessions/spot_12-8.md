@@ -1,4 +1,4 @@
-# STUDY GUIDE
+# SPOT Session 12/8
 
 ## Blocks
 
