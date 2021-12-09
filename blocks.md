@@ -158,6 +158,10 @@ p reduce(array) { |acc, num| acc + num if num.odd? }  # => NoMethodError
 ---
 
 - Build a todo list
+  - Why would we prefer to build a custom method for a class vs using a built in method that we can call on collections contained within the objects state?
+    - This is the idea behind encapsulation: we want to hide implementation details from users of the TodoList class, and not encourage users of this class to reach into its internal state. Instead, we want to encourage users of the class to use the interfaces (ie, public methods) we created for them.
+    - The entire goal of creating a class and encapsulating logic in a class is to hide implementation details and contain ripple effects when things change. Prefer to use the class's interface where possible.
+
 - Blocks and variable scope
 - symbol to proc
 
