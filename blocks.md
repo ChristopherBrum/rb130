@@ -12,11 +12,39 @@
 
 ### Blocks, Procs and Lambdas
 
-A block is delineated by either a `do..end` or a `{..}` and are very common in Ruby. Every method in Ruby can be passed an implicit block. When a block is included with a method invocation.
+A **block** is a piece of code enclosed with a `do..end` or a `{..}` and are very common in Ruby. Every method in Ruby can be passed an implicit block and when a block is included with a method invocation it can provide more specific functionality. Blocks can also take in parameters. A block is not the same as a method implementation, these are two separate things. A block is passed in as an argument to a invoked method and the method implementation dictates what is done with it.
 
-### Binding
+```ruby
+arr = [1, 2, 3, 4, 5]
 
-### Main ways to work with closures
+arr.each do |number|
+  puts number * 10
+end
+
+arr.each { |number| number * 10 }
+
+# the do..end delineate the block passed into the #each method as an argument
+         do |number| 
+  puts number * 10
+end
+# or the {..}
+         { |number| number * 10 }
+```
+
+A **Proc** object is a way of capturing a block within an object. This allows us to assign the Proc object to a variable, pass it around and execute it elsewhere in a program. When creating a new Proc object you pass it a block as an argument.
+
+```ruby
+my_first_proc = Proc.new { puts "I'm a proc object!" }
+puts my_first_proc #<Proc:0x0000559223e877a8 solution.rb:1>
+```
+
+A **Lambda** is another way to define and save a block with a special syntax.
+
+```ruby
+baby_lambda = -> { puts "I'm a lil baby lambda" }
+baby_lambda.call # I'm a lil baby lambda
+puts baby_lambda #<Proc:0x00005566ff7db228 solution.rb:1 (lambda)>
+```
 
 ---
 
@@ -26,6 +54,8 @@ A block is delineated by either a `do..end` or a `{..}` and are very common in R
 - How?
 - Why?
 - What can you do within a block?
+
+---
 
 ## Writing methods that take blocks
 
