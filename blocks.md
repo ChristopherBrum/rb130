@@ -10,10 +10,6 @@
 - They can be thought of like a method that can be passed around and executed but is not named.
 - A Ruby method is not a closure.
 
-![Closures pt 1](https://drive.google.com/file/d/1iFWgi_BtLGCFp7PCMLg87FOcVGkK_zSO/view?usp=sharing)
-
-![Closures pt 2](https://drive.google.com/file/d/1QcYPXCjkiDypaELj4hW4Rx1Fcx8EiebN/view?usp=sharing)
-
 ### Blocks, Procs and Lambdas
 
 A block is delineated by either a `do..end` or a `{..}` and are very common in Ruby. Every method in Ruby can be passed an implicit block. When a block is included with a method invocation.
