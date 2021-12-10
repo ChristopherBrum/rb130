@@ -50,20 +50,31 @@ puts baby_lambda #<Proc:0x00005566ff7db228 solution.rb:1 (lambda)>
 
 ## Calling methods with blocks
 
-- What?
-- How?
-- Why?
-- What can you do within a block?
+Code we wrote in a block is not the method implementation -- in fact, that code has nothing to do with the method implementation. The entire block is passed in to a method like any other argument, and it's up to the method implementation to decide what to do with the block that you passed in. The method could take that block and execute it, or just as likely, it could completely ignore it -- it's up to the method implementation to decide what to do with the block of code given to it.
 
 ---
 
 ## Writing methods that take blocks
 
-- What?
-- How?
-- Why?
+In Ruby, every method can take an optional block as an _implicit parameter_. The block can simply be added to the end of the method invocation and the method will decide what, if anything, to do with it.
+
+```ruby
+def say_hi(greeting)
+  greeting
+end
+
+p say_hi                                        # ArgumentError: wrong number of arguments (given 0, expected 1)
+p say_hi('Hi there')                            # Hi there
+p say_hi('Merry', 'Christmas')                  # ArgumentError: wrong number of arguments (given 2, expected 1)
+
+p say_hi { puts "BLOCK" }                       # ArgumentError: wrong number of arguments (given 0, expected 1)
+p say_hi('Hi there') { puts "BLOCK" }           # Hi there
+p say_hi('Merry', 'Christmas') { puts "BLOCK" } # ArgumentError: wrong number of arguments (given 2, expected 1)
+```
+
 - Yielding
   - `yield` keyword
+  We can invoke a passed in block by using the keyword `yield`.
   - `LocalJumpError`
   - Making yield optional
 - Passing execution to the block
