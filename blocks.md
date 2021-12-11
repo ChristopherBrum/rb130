@@ -202,7 +202,90 @@ In this case the method implementor in not concerned with what code is passed in
 
 ### Methods with an explicit block parameter
 
+By default block parameters are implicitly passed to a method at invocation but Ruby gives us a way to _explicitly_ pass a block a method and have is assigned to a method parameter to be passed around and executed as needed within the method body. By defining a method parameter in a method definition with the `unary & operator` (`&`) at the beginning you are telling Ruby that this method, when invoked, will have a block passed in and that block will be saved to this parameter. The `&` is only required in front of the parameter name and not within the method definition body.
+
+What `&` is doing is converting the block passed in at invocation into a `Proc` object, which is essentially a way of encapsulating a block into an object that can then be passed around and called. The `Proc#call` method is used to execute the block and arguments can be passed into the block. If an explicit method is called for but no block is passed in at method invocation a `NoMethodError` will be raised.
+
+```ruby
+def say_hi(name, &chunk) # & calls for an explicit block and saves it to the method parameter chunk
+  chunk.call(name)       # use the #call method to execute the block and pass in one argument
+end
+
+say_hi('Chris') do |name|
+  puts "Hello #{name}"   # outputs Hello Chris
+end
+
+say_hi('Chris')          # NoMethodError: undefined method `call' for nil:NilClass
+```
+
 ### Using closures
+
+Closures retain a memory of their surrounding scope and this allows them access to variables, methods, constants, etc. which can be referenced or even updated when the closure is executed, even if these things are not within scope where the closure is executed.
+
+```ruby
+name = 'Chris'
+
+proc1 = Proc.new { puts "Hi there #{name}" }
+proc2 = Proc.new { puts "I'm avoiding #{name}" }
+
+proc1.call # Hi there Chris
+proc2.call # I'm avoiding Chris
+
+name = 'Maria'
+
+# calling proc1 and proc2 here shows that name has been reassigned to 'Maria' because the reassignment of name is now within scope of proc1 and proc2 below. 
+proc1.call # Hi there Maria
+proc2.call # I'm avoiding Maria
+```
+
+Variables must be defined above a closure in order to be in scope.
+
+```ruby
+name = 'Maria'
+
+proc1 = Proc.new { puts "Hi there #{name}" }
+proc2 = Proc.new { puts "I'm avoiding #{name}" }
+
+proc1.call # Hi there Maria
+proc2.call # I'm avoiding Maria
+
+```
+
+```ruby
+proc1 = Proc.new { puts "Hi there #{name}" }
+proc2 = Proc.new { puts "I'm avoiding #{name}" }
+
+name = 'Maria'
+
+proc1.call # NameError: undefined local variable or method `name' for main:Object
+proc2.call # NameError: undefined local variable or method `name' for main:Object
+```
+
+Method definitions can be defined after a closure is defined but must be defined before a closure is called. 
+
+```ruby
+proc1 = Proc.new { puts "Hi there #{name}" }
+proc2 = Proc.new { puts "I'm avoiding #{name}" }
+
+def name
+  "Dr. Doogie Hauser"
+end
+
+proc1.call # Hi there Dr. Doogie Hauser
+proc2.call # I'm avoiding Dr. Doogie Hauser
+```
+
+```ruby
+proc1 = Proc.new { puts "Hi there #{name}" }
+proc2 = Proc.new { puts "I'm avoiding #{name}" }
+
+proc1.call # NameError: undefined local variable or method `name' for main:Object
+proc2.call # NameError: undefined local variable or method `name' for main:Object
+
+def name
+  "Dr. Doogie Hauser"
+end
+```
 
 ---
 
