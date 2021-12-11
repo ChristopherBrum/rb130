@@ -1,5 +1,33 @@
 # Blocks
 
+- [Closures in Ruby](#closures-in-ruby)
+  - [Closures](#closures)
+  - [Blocks Procs and Lambdas](#blocks-procs-and-lambdas)
+- [Calling methods with blocks](#calling-methods-with-blocks)
+- [Writing methods that take blocks](#writing-methods-that-take-blocks)
+  - [Yielding](#yielding)
+  - [LocalJumpError](#localjumperror)
+  - [Making yield optional](#making-yield-optional)
+  - [Yielding to the block](#yielding-to-the-block)
+  - [Yielding with an Argument](#yielding-with-an-Argument)
+  - [Block parameter vs Block local variable](#block-parameter-vs-block-local-variable)
+  - [Arguments passed to a block vs passed to a method](#arguments-passed-to-a-block-vs-passed-to-a-method)
+  - [Arity](#arity)
+  - [Return value of yielding to the block](#return-value-of-yielding-to-the-block)
+  - [When to use blocks in your own methods](#when-to-use-blocks-in-your-own-methods)
+    - [Defer some implementation details til invocation](#defer-some-implementation-details-til-invocation)
+    - [Before and After action: Sandwich Code](#sandwich-code)
+  - [Methods with an explicit block parameter](#methods-with-an-explicit-block-parameter)
+  - [Using closures](#using-closures)
+- [Key Points](#key-points)
+- [Blocks and variable scope](#blocks-and-variable-scope)
+- [symbol to proc](#symbol-to-proc)
+- [Summary of Concepts](#summary-of-concepts)
+- [Build a todo list](#build-a-todo-list)
+- [Questions](#questions)
+
+---
+
 ## Closures in Ruby
 
 ### Closures
@@ -194,7 +222,7 @@ With every method there are tow main players; the **method implementor** and the
 
 In this case the method implementor is concerned with the code passed in by the method caller because the way the method is defined will dictate whether or not the code passed in will function appropriately.
 
-#### Before and After action: Sandwich Code
+#### Sandwich Code
 
 Sandwich code is the idea that the _method caller_ will pass in a block to a piece of code and that block will be _sandwiched_ between 'before' and 'after' functionality. In this case the method implementor is not concerned with what the method caller is passing in, only that the chunk of code that is passed in will be sandwiched between bits of functionality created by the implementor. Sandwich code can be useful for the purposes of timing pieces of code to test efficiency or in resource management and freeing up resources, that could otherwise cause crashes and memory leaks (ie. big problems). See the `File::open` class method.
 
@@ -289,7 +317,7 @@ end
 
 ---
 
-### Key Points
+## Key Points
 
 - blocks are one way that Ruby implements closures. Closures are a way to pass around an unnamed "chunk of code" to be executed later.
 - blocks can take arguments, just like normal methods. But unlike normal methods, it won't complain about wrong number of arguments passed to it.
@@ -299,133 +327,6 @@ end
 - methods and blocks can return a chunk of code by returning a Proc or lambda.
 
 ---
-
-## Building methods that take blocks
-
-Build a "times" method from scratch
-
-```ruby
-#method definition
-def times(num)
-  counter = 0
-  
-  while counter < num
-    yield(counter)
-    counter += 1
-  end
-  
-  num
-end
-
-# method invocation
-# block passed in with #times method is invoked by the yield keyword in the method definition
-times(5) do |current_num|
-  puts current_num
-end
-
-# 0
-# 1
-# 2
-# 3
-# 4
-# => 5
-```
-
----
-
-Build an "each" method from scratch
-
-```ruby
-# Method definition
-def each(arr)
-  counter = 0
-  
-  while counter < arr.size
-    yield(arr[counter])
-    counter += 1
-  end
-  
-  arr
-end
-
-# method invocation
-# block passed in with #times method is invoked by the yield keyword in the method definition
-each([1, 2, 3, 4, 5]) do |element|
-  puts element * 2
-end
-# 2
-# 4
-# 6
-# 8
-# 10
-# => [1, 2, 3, 4, 5]
-```
-
----
-
-- Build an "select" method from scratch
-
-```ruby
-# Method definition
-def new_select(arr)
-  counter = 0
-  new_arr = []
-  
-  while counter < arr.size
-    # return value of block used to check for truthiness
-    if yield(arr[counter])
-      new_arr << arr[counter]
-    end
-    
-    counter += 1
-  end
-  
-  new_arr
-end
-
-array = [1, 2, 3, 4, 5]
-
-# method invocations
-# block passed in with #times method is invoked by the yield keyword in the method definition
-p new_select(array) { |num| num.odd? } == [1, 3, 5] # true
-p new_select(array) { |num| puts num } == [] # outputs 1, 2, 3, 4, 5 and returns true
-p new_select(array) { |num| num + 1 } == [1, 2, 3, 4, 5] # true
-```
-
----
-
-Build an "reduce" method from scratch
-
-```ruby
-def reduce(arr, default=nil)
-  accumulator = (default ? default : arr.first)
-  counter = (default ? 0 : 1)
-  
-  while counter < arr.size
-    accumulator = yield(accumulator, arr[counter])
-    counter += 1
-  end
-  
-  accumulator
-end
-
-array = [1, 2, 3, 4, 5]
-
-
-p reduce(array) { |acc, num| acc + num } == 15
-p reduce(array, 10) { |acc, num| acc + num } == 25
-p reduce(['a', 'b', 'c']) { |acc, value| acc += value } == 'abc'
-p reduce([[1, 2], ['a', 'b']]) { |acc, value| acc + value } == [1, 2, 'a', 'b']
-# p reduce(array) { |acc, num| acc + num if num.odd? }  # => NoMethodError
-```
-
----
-
-## Build a todo list
-
-- Why would we prefer to build a custom method for a class vs using a built in method that we can call on collections contained within the objects state?
-  - This is the idea behind encapsulation: we want to hide implementation details from users of the TodoList class, and not encourage users of this class to reach into its internal state. Instead, we want to encourage users of the class to use the interfaces (ie, public methods) we created for them.
-  - The entire goal of creating a class and encapsulating logic in a class is to hide implementation details and contain ripple effects when things change. Prefer to use the class's interface where possible.
 
 ## Blocks and variable scope
 
@@ -510,6 +411,12 @@ something { |x| x.to_s } # String
 - once we understand blocks, we can re-implement many of the common methods in the Ruby core library in our own classes.
 - the Symbol#to_proc is a nice shortcut when working with collections.
 - how to return a chunk of code from a method or block
+
+## Build a todo list
+
+- Why would we prefer to build a custom method for a class vs using a built in method that we can call on collections contained within the objects state?
+  - This is the idea behind encapsulation: we want to hide implementation details from users of the TodoList class, and not encourage users of this class to reach into its internal state. Instead, we want to encourage users of the class to use the interfaces (ie, public methods) we created for them.
+  - The entire goal of creating a class and encapsulating logic in a class is to hide implementation details and contain ripple effects when things change. Prefer to use the class's interface where possible.
 
 ## Questions
 
