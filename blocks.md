@@ -72,22 +72,137 @@ p say_hi('Hi there') { puts "BLOCK" }           # Hi there
 p say_hi('Merry', 'Christmas') { puts "BLOCK" } # ArgumentError: wrong number of arguments (given 2, expected 1)
 ```
 
-- Yielding
-  - `yield` keyword
-  We can invoke a passed in block by using the keyword `yield`.
-  - `LocalJumpError`
-  - Making yield optional
-- Passing execution to the block
-- Yielding with an Argument
-  - Block parameter vs Block local variable
-  - Arguments passed to a block vs passed to a method
-  - **Arity**
-- Return value of yielding to the block
-- When to use blocks in your own methods
-  - Defer some implementation details til implementations
-  - Before and After action: Sandwich code
-- Methods with an explicit block parameter
-- Using closures
+### Yielding
+
+The `yield` keyword is used to execute a block that has been passed in as an argument at method invocation. When the program encounters the `yield` keyword it looks for a block passed in at method invocation and them _jumps_ to that block and executes the code within it. A block returns the last expression evaluated within it, therefore, that return value is returned by `yield`, which can be utilized if desired.
+
+By having a method that takes a block in as an argument it allows some of the functionality of the method to be decided by the programmer whom is invoking the method. THis allows us to write more generic methods that allow some of the specifics to be decided at invocation which makes our program much more flexible.
+
+```ruby
+def say_hi
+  yield
+end
+
+say_hi { puts "Method execution yields to the block" } # Method execution yields to the block
+```
+
+### LocalJumpError
+
+If the `yield` keyword is executed within a method definition but no block was passed in during invocation a `LocalJumpError` will be raised.
+
+```ruby
+def say_hi
+  yield
+end
+
+say_hi # LocalJumpError: no block given (yield)
+```
+
+This demonstrates that if no block is passed to a method invocation and `yield` is present within the method implementation, Ruby will raise an error.
+
+### Making yield optional
+
+Ruby gives us a method that can aide in this situation, the `Kernel#block_given?` method. This method will return a boolean value based on whether a block has been passed in as an argument at method invocation or not. It can be utilized within a conditional statement to avoid raising a `LocalJumpError` unnecessarily.
+
+```ruby
+def say_hi
+  yield if block_given?
+end
+
+say_hi # => nil
+say_hi { puts "Method execution yields to the block" } # Method execution yields to the block
+```
+
+In both cases, the `Kernel#block_given?` method is invoked by calling `#say_hi`. The first invocation evaluates `Kernel#block_given?` to false because no block was passed in as an argument, therefore `yield` is not executed and `nil` is returned by `#say_hi` because the conditional was the last expression evaluated in the method. The next invocation has a block passed in as an _implicit_ argument, so `Kernel#block_given` evaluates to true and `yield` _yields_ to the block, which outputs `Method execution yields to the block`.
+
+### Yielding to the block
+
+When a block is passed to a method invocation as an argument and the `yield` keyword is called within the method implementation the code 'jumps' from the code being executed within the method definition to the block, and executes the code within the block before jumping back to the code being executed within the method definition.
+
+### Yielding with an Argument
+
+Sometimes a block requires an argument, even though a block itself it an argument being passed to a method invocation. The variable enclosed within the two pipes (`|num|`) is the _block parameter_, which will have a value assigned to it when the `yield` keyword is invoked with an argument passed to it within the method implementation (this implementation is done behind the scenes within the method definition of `Integer#times`). 
+
+```ruby
+3.times { |num| puts num }
+```
+
+In the code above;
+
+- `3` is the calling object.
+- `.times` is the method being called/invoked.
+- `{ |num| puts num }` is the block being passed in as an argument.
+- `|num|` is the block parameter.
+- `num` within the block is a _block local variable_.
+
+### Block parameter vs Block local variable
+
+?????
+
+### Arguments passed to a block vs passed to a method
+
+When passing in arguments to a method at invocation the number of arguments must match the expected number of arguments within the method definition or else raise an error, but with block parameters that is not the case. If _more_ arguments are passed in with the `yield` keyword than are defined within the block, no error is thrown. And if _less_ arguments are passed in with the `yield` keyword than are defined within the block, no error is thrown and the block parameters that have not had a value assigned to them will have a `nil` as a value.
+
+### Arity
+
+Rules regarding the numbers of arguments that must be passed to a block, Proc object or a lambda in Ruby is referred to as **arity**. Blocks and Procs have _lenient arity_ in Ruby, which means no errors will be raised if the number of arguments passed to the block does not match the number of block parameters. Methods and lambdas have **strict arity**, which means the number of arguments passed to them must match the number of arguments that they are expecting, else they will throw an error.
+
+- **Lenient Arity**: blocks and procs
+- **Strict Arity**: methods and lambdas
+
+```ruby
+# lenient arity
+def say_hi
+  yield(1)
+end
+
+say_hi { |x, y| puts "x is: #{x}, y is: #{y}" } # x is: 1, y is: 
+say_hi { puts "No block parameters" } # No block parameters
+
+# strict arity
+def say_bye(name)
+  puts "Goodbye #{name}"
+end
+
+say_bye                  # ArgumentError: wrong number of arguments (given 0, expected 1)
+say_bye('Chris', 'Mike') # ArgumentError: wrong number of arguments (given 2, expected 1)
+```
+
+### Return value of yielding to the block
+
+A block returns the last expression evaluated within it just like normal methods, therefore, that return value is returned by the `yield` keyword, which can be utilized if desired. It is also important to note that just like normal methods a block can mutate an argument passed into it with a destructive method call.
+
+```ruby
+def say_hi(name)
+  puts name # Christopher
+  block_return = yield(name)
+  puts block_return # CHRISTOPHER
+end
+
+say_hi('Christopher') do |name|
+  name.upcase! # mutates the argument passed in and returns it => CHRISTOPHER
+end
+```
+
+### When to use blocks in your own methods
+
+While building programs there comes a time when a decision must be made on where a block makes sense to be utilized as an argument passed into a method invocation. There are two main cases for this:
+
+#### Defer some implementation details til invocation
+
+With every method there are tow main players; the **method implementor** and the **method caller**. There are certain situations when writing a method where you won't know exactly how the method caller will want to utilize a method. By writing a method with that idea in mind you can allow for different inputs passed in by the method caller (ie. blocks) to still perform a specific action, the final _implementation_ details are deferred to the _method caller_. We see this all the time with methods like `#select`, where the method caller will pass in a block that serves their specific needs and the `#select` method takes in that unique block and implements the functionality specific to the `#select` method. This gives us great flexibility by having methods that are serve one purpose but can serve this purpose based on what the method caller is passing into it.
+
+In this case the method implementor is concerned with the code passed in by the method caller because the way the method is defined will dictate whether or not the code passed in will function appropriately.
+
+#### Before and After action: Sandwich Code
+
+Sandwich code is the idea that the _method caller_ will pass in a block to a piece of code and that block will be _sandwiched_ between 'before' and 'after' functionality. In this case the method implementor is not concerned with what the method caller is passing in, only that the chunk of code that is passed in will be sandwiched between bits of functionality created by the implementor. Sandwich code can be useful for the purposes of timing pieces of code to test efficiency or in resource management and freeing up resources, that could otherwise cause crashes and memory leaks (ie. big problems). See the `File::open` class method.
+
+In this case the method implementor in not concerned with what code is passed in by the method caller, only that their method performs some action before and after the method yields to the block.
+
+### Methods with an explicit block parameter
+
+### Using closures
 
 ---
 
