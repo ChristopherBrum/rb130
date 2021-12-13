@@ -6,6 +6,8 @@
 
   In order to simplify things and avoid throwing lots of confusing terminology around we will refer to the testing we are learning here as **unit testing**.
 
+---
+
 ## Introduction to Minitest
 
 **Minitest** can do everything that **RSpec** can, but in a more simple and straightforward way. RSpec goes out of its way to be read like natural English but at the sake of simplicity. RSpec is also a **Domain Specific Language** (DSL) for writing tests. Minitest can use a DSL but can also be used in a way that reads like standard Ruby code.
@@ -82,6 +84,12 @@ assert_equal(4, car.wheels)
 
 ## Assertions and refutations
 
+Previously we used `#assert_equal` to test whether or not a new instance of the Car class had  4 wheels. This is the most common assertion but far from the only one.
+
+Sometimes we need to assert something other than equality, for instance whether a certain error is raised, or if an object is of a specific class, or that something is output to standard output (`STDOUT`), or that something is `nil`, etc.
+
+[Here a full list of MiniTest assertions can be found.](http://docs.seattlerb.org/minitest/Minitest/Assertions.html)
+
 | Assertion                          | Description                             |
 |------------------------------------|-----------------------------------------|
 | `assert_equal(exp, act)`           | Fails unless exp == act.                |
@@ -90,11 +98,117 @@ assert_equal(4, car.wheels)
 | `assert_instance_of(cls, obj)`     | Fails unless obj is an instance of cls. |
 | `assert_includes(collection, obj)` | Fails unless collection includes obj.   |
 
+### Refutations
+
+---
+
 ## The general approach for testing
+
+### SEAT Approach
+
+With larger projects there are generally 4 steps to writing a test:
+
+1. **S**et up the necessary objects.
+2. **E**xecute the code against the object we're testing.
+3. **A**ssert the results of the execution.
+4. **T**ear down and clean up any lingering artifacts.
+
+We have already been practicing working through steps 2 and 3 by building _test steps_ and _test cases_, but we also have a way to run some code prior to any of the test cases being ran that can then be sued within the tests themselves. This can reduce redundant code and make our test suite more efficient.
+
+By defining a `#setup` before all the test methods within our test class this method will execute and any code within it. We can use this to open files, or initialize an instance variable that is accessible anywhere within our test class.
+
+```ruby
+require 'minitest/autorun'
+require_relative 'car'
+
+class CarTest < MiniTest::Test
+
+  def test_car_exists
+    car = Car.new
+    assert(car)
+  end
+
+  def test_wheels
+    car = Car.new
+    assert_equal(4, car.wheels)
+  end
+end
+```
+
+The above code can be simplified by using a `#setup` method at the top of the class.
+
+```ruby
+require 'minitest/autorun'
+require_relative 'car'
+
+class CarTest < MiniTest::Test
+  
+  def setup
+    @car = Car.new
+  end
+    
+  def test_car_exists
+    assert(@car)
+  end
+
+  def test_wheels
+    assert_equal(4, @car.wheels)
+  end
+end
+```
+
+This may not seem like much but as your program grows your test suite will grow as well and this can save you a lot of redundant code.
+
+Similar to the `#setup` method we can define a `#teardown` method that will execute after all of your _test cases_. This can be helpful in a number of different ways, like working with a database that connected to within the `#setup` method and can be disconnected from within the `#teardown` method.
+
+```ruby
+require 'minitest/autorun'
+require 'pg'
+
+class MyApp
+  def initialize
+    @db = PG.connect 'mydb'
+  end
+  
+  def cleanup
+    @db.finish
+  end
+end
+
+class DatabaseTest < Minitest::Test
+  def setup
+    @myapp = MyApp.new
+  end
+  
+  def test_that_query_on_empty_database_returns_nothing
+    assert_equal 0, @myapp.count
+  end
+  
+  def test_that_query_on_non_empty_database_returns_right_count
+    @myapp.create('Abc')
+    @myapp.create('Def')
+    @myapp.create('Ghi')
+    assert_equal 3, @myapp.count
+  end
+  
+  def teardown
+    @myapp.cleanup
+  end
+end
+```
+
+Both #setup and #teardown are independent and optional; you can have both, neither, or either one in any test suite.
+
+---
 
 ## Testing equality
 
+---
+
 ## Write your first test suite
+
+---
 
 ## Code and test coverage
 
+---
