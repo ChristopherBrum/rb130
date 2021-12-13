@@ -21,6 +21,8 @@
   - [Using closures](#using-closures)
 - [Key Points](#key-points)
 - [Blocks and variable scope](#blocks-and-variable-scope)
+  - [Refreshing our understanding of local variable scope](#refreshing-our-understanding-of-local-variable-scope)
+  - [Closure and Binding](#closure-and-Binding)
 - [symbol to proc](#symbol-to-proc)
 - [Summary of Concepts](#summary-of-concepts)
 - [Build a todo list](#build-a-todo-list)
@@ -330,12 +332,51 @@ end
 
 ## Blocks and variable scope
 
-- Refreshing our understanding of local variable scope
-- Closure and Binding
-  - What?
-  - How?
-  - Why?
-  - In Ruby a closure is represented by a block, Proc object, or a lambda.
+### Refreshing our understanding of local variable scope
+
+Local variables are scoped based on where they are initialized and we think of where they are initialized in terms of _inner_ and _outer_ scope. With a block local variables defined outside of the block are accessible within the block but local variables defined within the block are not accessible outside of the block. Therefore a block creates a new scope for local variables. This is referring only to local variables, sometimes invoking methods will look exactly the same as invoking a local variable when there is no parenthesis. It's important to look to where the local variable was initialized in order to define its scope, and make sure it is a local variable and not a method invocation that you're dealing with.
+
+### Closure and Binding
+
+- In Ruby the idea of a closure is implemented by saving a chunk of code within a _block_ and can be passed around an executed at a later time and place. These closures can also be encapsulated within a Proc object or a lambda. In order for closures to be able to be executed at a later time and place while maintaining its bindings it must retain a memory of the surrounding context in which it was defined.
+
+```ruby
+name = "Chris"
+
+chunk_of_code = Proc.new { puts "Hi there #{name}" }
+
+chunk_of_code.call # Hi there Chris
+```
+
+Above, nothing out of the ordinary is going on. A local variable is assigned to String object, a Proc object is instantiated with a block passed in as an argument with the local variable `name` interpolated within the block, then its saved to a local variable. Finally, the Proc object is called and outputs `'Hi there Chris'`.
+
+The block passed in as Proc object instantiation creates a closure which creates a binding to the `name` local variable. This is how the value of `name` is accessible when `chunk_of_code.call` is executed.
+
+```ruby
+name = "Chris"
+
+chunk_of_code = Proc.new { puts "Hi there #{name}" }
+
+name = "Sam"
+
+chunk_of_code.call # Hi there Sam
+```
+
+Because a closures retains a binding with the artifacts that are within its scope when the block is created, the value of the artifacts bound to the closure can be updated after the block was created and the closure can access these updated values. Above, `name` is reassigned _after_ the Proc object and closure are created but _before_ calling the Proc object, therefore the updated value of `name` is what is accessible through the binding created within the closure.
+
+```ruby
+name = "Chris"
+
+chunk_of_code = Proc.new { puts "Hi there #{name}" }
+
+name = "Sam"
+
+chunk_of_code.call # Hi there Sam
+
+name = "Bob"
+```
+
+Because the reassignment of `name` to `"Bob"` was after the call on `chunk_of_code` it was not accessible by the binding created through the closure of `chunk_of_code`.
 
 Questions:
 
@@ -345,9 +386,6 @@ Questions:
   
 ## symbol to proc
 
-- What?
-- How?
-- Why?
 - We cannot use methods that take arguments with this shortcut.
 - This shortcut will work with any collection that takes a block.
 
