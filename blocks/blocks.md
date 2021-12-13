@@ -338,7 +338,11 @@ Local variables are scoped based on where they are initialized and we think of w
 
 ### Closure and Binding
 
-In Ruby the idea of a closure is implemented by saving a chunk of code within a _block_ and can be passed around an executed at a later time and place. These closures can also be encapsulated within a Proc object or a lambda. In order for closures to be able to be executed at a later time and place while maintaining its bindings it must retain a memory of the surrounding context in which it was defined.
+In Ruby the idea of a closure is implemented by saving a chunk of code so that it can be passed around an executed at a later time and place.
+
+> _In order for a block to actually be passed around and executed a later time/place it must be encapsulated within a Proc or lambda._
+
+If we want to get technical; a block by itself is not actually a closure, but when encapsulated within a Proc or a lambda a closure is created.  For the purposes of discussing closures in Ruby though, it's easier just to think of blocks as closures. When a closure is created all artifacts within its scope can be have a binding created to the closure so that these artifacts can be utilized when the closure is executed.
 
 ```ruby
 name = "Chris"
@@ -350,7 +354,9 @@ chunk_of_code.call # Hi there Chris
 
 Above, nothing out of the ordinary is going on. A local variable is assigned to String object, a Proc object is instantiated with a block passed in as an argument with the local variable `name` interpolated within the block, then its saved to a local variable. Finally, the Proc object is called and outputs `'Hi there Chris'`.
 
-The block passed in as Proc object instantiation creates a closure which creates a binding to the `name` local variable. This is how the value of `name` is accessible when `chunk_of_code.call` is executed.
+> A closure's binding consists of artifacts that were in scope at the point at which the closure was created; by artifacts we mean things like variables, method references, etc.
+
+The Proc object instantiation creates a closure which allows access to all artifacts within scope of the block to be bound to it. In this case it creates a binding to the `name` local variable. This is how the value of `name` is accessible when `chunk_of_code.call` is executed.
 
 ```ruby
 name = "Chris"
@@ -362,7 +368,9 @@ name = "Sam"
 chunk_of_code.call # Hi there Sam
 ```
 
-Because a closures retains a binding with the artifacts that are within its scope when the block is created, the value of the artifacts bound to the closure can be updated after the block was created and the closure can access these updated values. Above, `name` is reassigned _after_ the Proc object and closure are created but _before_ calling the Proc object, therefore the updated value of `name` is what is accessible through the binding created within the closure.
+> Any variables that need to be accessed in a proc (or block/ lambda) must be defined before the proc is created (or passed as an argument when the proc is called).
+
+Because a closures retains a binding with the artifacts that are within its scope when the block is created, the value of the artifacts bound to the closure can be updated after the closure was created and the closure can access these updated values. Above, `name` is reassigned _after_ the Proc object and closure are created but _before_ calling the Proc object, therefore the updated value of `name` is what is accessible through the binding created within the closure.
 
 ```ruby
 name = "Chris"
