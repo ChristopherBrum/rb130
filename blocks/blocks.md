@@ -338,7 +338,7 @@ Local variables are scoped based on where they are initialized and we think of w
 
 ### Closure and Binding
 
-- In Ruby the idea of a closure is implemented by saving a chunk of code within a _block_ and can be passed around an executed at a later time and place. These closures can also be encapsulated within a Proc object or a lambda. In order for closures to be able to be executed at a later time and place while maintaining its bindings it must retain a memory of the surrounding context in which it was defined.
+In Ruby the idea of a closure is implemented by saving a chunk of code within a _block_ and can be passed around an executed at a later time and place. These closures can also be encapsulated within a Proc object or a lambda. In order for closures to be able to be executed at a later time and place while maintaining its bindings it must retain a memory of the surrounding context in which it was defined.
 
 ```ruby
 name = "Chris"
@@ -383,6 +383,8 @@ Questions:
 - How is a closure scoped?
 - What elements/objects can be _bound_ within a closure?
 - How does a local variable and a method definition differ when it comes to their scope within a closure?
+
+---
   
 ## symbol to proc
 
@@ -437,6 +439,8 @@ something(&:to_s) # String
 something { |x| x.to_s } # String
 ```
 
+---
+
 ## Summary of Concepts
 
 - blocks are just one way Ruby implements closures. Procs and lambdas are others.
@@ -450,11 +454,15 @@ something { |x| x.to_s } # String
 - the Symbol#to_proc is a nice shortcut when working with collections.
 - how to return a chunk of code from a method or block
 
+---
+
 ## Build a todo list
 
 - Why would we prefer to build a custom method for a class vs using a built in method that we can call on collections contained within the objects state?
   - This is the idea behind encapsulation: we want to hide implementation details from users of the TodoList class, and not encourage users of this class to reach into its internal state. Instead, we want to encourage users of the class to use the interfaces (ie, public methods) we created for them.
   - The entire goal of creating a class and encapsulating logic in a class is to hide implementation details and contain ripple effects when things change. Prefer to use the class's interface where possible.
+
+---
 
 ## Questions
 
