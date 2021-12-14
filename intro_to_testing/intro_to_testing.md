@@ -203,9 +203,129 @@ Both #setup and #teardown are independent and optional; you can have both, neith
 
 ## Testing equality
 
----
+When using the `#assert_equality` method we are testing for _value equality_, specifically invoking the `#==` method on the object. When using the `#assert_same` method we are testing for _object equality_.
 
-## Write your first test suite
+```ruby
+require 'minitest/autorun'
+require "minitest/reporters"
+Minitest::Reporters.use!
+
+require_relative 'car'
+
+class CarTest < MiniTest::Test
+  def setup
+    @car = Car.new
+    @str1 = "hi there"
+    @str2 = "hi there"
+  end
+
+  def test_value_equality
+    assert_equal(@str1, @str2) 
+  end
+  
+  def test_value_same
+    assert_same(@str1, @str2)
+  end
+end
+```
+
+When we run this above code we are invoking both `#assert_equal` and `#assert_same` and passing in `@str1` and `@str2` as arguments. The test case of `#test_value_equality` passes, but the test case of `#test_value_same` fails, and within the information output to the terminal it states that `Expected "hi there" (oid=520) to be the same as "hi there" (oid=540).`, which identifies that `#assert_same` is comparing the objects for equality and `#assert_equality` is comparing the objects _values_ for equality.
+
+```ruby
+Started with run options --seed 28988
+
+ FAIL CarTest#test_value_same (0.00s)
+        Expected "hi there" (oid=520) to be the same as "hi there" (oid=540).
+        intro_to_testing/car_test.rb:19:in `test_value_same`
+
+  2/2: [=======================================================] 100% Time: 00:00:00, Time: 00:00:00
+
+Finished in 0.00428s
+2 tests, 2 assertions, 1 failures, 0 errors, 0 skips
+```
+
+### Equality with a custom class
+
+The above behavior is expected when dealing with String objects, or any other object type built into the Ruby library, but when testing custom class objects we need to define our own custom `#==` method within the class.
+
+```ruby
+require 'minitest/autorun'
+require "minitest/reporters"
+Minitest::Reporters.use!
+
+require_relative 'car'
+
+class CarTest < MiniTest::Test
+  def setup
+    @car1 = Car.new
+    @car2 = Car.new
+  end
+
+  def test_value_equality
+    assert_equal(@car1, @car2) 
+  end
+  
+  def test_value_same
+    assert_same(@car1, @car2)
+  end
+end
+```
+
+The above code when ran on our original `car.rb` file will result in both of our tests failing.
+
+```ruby
+Started with run options --seed 55587
+
+ FAIL CarTest#test_value_same (0.00s)
+        Expected #<Car:0x00007fb52b1cf7b8 @wheels=4> (oid=520) to be the same as #<Car:0x00007fb52b1cf858 @wheels=4> (oid=540).
+        intro_to_testing/car_test.rb:18:in `test_value_same`
+
+ FAIL CarTest#test_value_equality (0.07s)
+        No visible difference in the Car#inspect output.
+        You should look at the implementation of #== on Car or its members.
+        #<Car:0xXXXXXX @wheels=4>
+        intro_to_testing/car_test.rb:14:in `test_value_equality'
+
+  2/2: [=======================================================] 100% Time: 00:00:00, Time: 00:00:00
+
+Finished in 0.07824s
+2 tests, 2 assertions, 2 failures, 0 errors, 0 skips
+```
+
+For the failure on `#test_value_equality`, Ruby is specifically telling us to look at the implementation of the `#==` method within our `Car` class, because it doesn't know how to _assert value equality_ here.
+
+We can define a `Car#==` method to work with our test case.
+
+```ruby
+class Car
+  attr_accessor :wheels, :name
+
+  def initialize
+    @wheels = 4
+  end
+
+  def ==(other) # assert_equal would fail without this method
+    other.is_a?(Car) && name == other.name
+  end
+end
+```
+
+And then run `#test_value_equality` again. This time `#test_value_equality` passes.
+
+```ruby
+Started with run options --seed 2966
+
+ FAIL CarTest#test_value_same (0.00s)
+        Expected #<Car:0x00007f983f17fbe0 @wheels=4> (oid=520) to be the same as #<Car:0x00007f983f17fc08 @wheels=4> (oid=540).
+        intro_to_testing/car_test.rb:18:in `test_value_same`
+
+  2/2: [=======================================================] 100% Time: 00:00:00, Time: 00:00:00
+
+Finished in 0.00246s
+2 tests, 2 assertions, 1 failures, 0 errors, 0 skips
+```
+
+Now we can use `#assert_equal` within the `#test_value_equality` test case to effectively determine whether or not the 2 Car objects are considered equal within the context of what we are testing. `#assert_same` will still fail because it is looking at the object ID of the objects passed in, and is therefore will never pass unless we are testing an object against itself.
 
 ---
 

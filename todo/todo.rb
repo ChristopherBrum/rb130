@@ -101,7 +101,7 @@ class TodoList
   end
 
   def remove_at(index)
-    todos.delete_at(item_at(index))
+    todos.delete(item_at(index))
   end
 
   def to_s
