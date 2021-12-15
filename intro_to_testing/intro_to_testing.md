@@ -331,4 +331,15 @@ Now we can use `#assert_equal` within the `#test_value_equality` test case to ef
 
 ## Code and test coverage
 
+
+
 ---
+
+## Summary
+
+- Minitest is the default testing library that comes with Ruby.
+- Minitest tests come in 2 flavors: assert-style and spec-style. Unless you really like RSpec, use assert-style.
+- A test suite contains many tests. A test can contain many assertions.
+- Use assert_equal liberally, but don't be afraid to look up other assertions when necessary. - - Remember that assert_equal is for asserting value equality as determined by the == method.
+- Use the SEAT approach to writing tests.
+- Use code coverage as a metric to gauge test quality. (But not the only metric.)

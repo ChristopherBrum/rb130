@@ -42,23 +42,12 @@ class TodoList
   end
 
   # rest of class needs implementation
-  def add(todo)
-    begin
-      validate_todo(todo)
-    rescue RuntimeError => e
-      puts e.message
-    end
-
-    self.todos << todo
-  end
-
-  def validate_todo(todo)
-    raise TypeError.new("Can only add Todo objects") unless todo.instance_of? Todo
-  end
-
   def <<(todo)
-    add(todo)
+    raise TypeError, 'can only add Todo objects' unless todo.instance_of? Todo
+
+    @todos << todo
   end
+  alias_method :add, :<<
 
   def size
     todos.size
