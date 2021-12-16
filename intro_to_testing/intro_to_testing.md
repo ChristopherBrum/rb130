@@ -38,7 +38,7 @@ end
 ```
 
 - `require 'minitest/autorun'` the first line loads all the necessary files from the `minitest` gem.
-- `require_relative 'car'` ensures points to the file that we will be testing a class from. `require_relative` looks for the Ruby file `car` within the current files(`car_test.rb`) directory. Now when we reference anything from the `car.rb` file in our `car_test.rb` file, Ruby knows where to look.
+- `require_relative 'car'` points to the file that we will be testing a class from. `require_relative` looks for the Ruby file `car` within the current files(`car_test.rb`) directory. Now when we reference anything from the `car.rb` file in our `car_test.rb` file, Ruby knows where to look.
 
 ```ruby
 class CarTest < MiniTest::Test
