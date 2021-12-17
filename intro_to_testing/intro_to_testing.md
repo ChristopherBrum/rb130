@@ -1,6 +1,26 @@
 # Introduction to Testing
 
-## Why do we write tests?
+- [Why do we write tests?](#why-do-we-write-tests)
+- [Introduction to Minitest](#introduction-to-minitest)
+  - [Vocabulary](#vocabulary)
+  - [Whats in the test file](#whats-in-the-test-file)
+  - [Reading Testing Output](#reading-testing-output)
+  - [Failures](#failures)
+  - [Minitest Reporters](#minitest-reporters)
+  - [Skipping Tests](#skipping-tests)
+  - [Expectation Syntax vs Assertion](#expectation-syntax-vs-assertion)
+  - [RSpec vs MiniTest](#rspec-vs-minitest)
+  - [Minitest Summary](#minitest-summary)
+- [Assertions and refutations](#assertions-and-refutations)
+  - [Refutations](#refutations)
+- [The general approach for testing](#the-general-approach-for-testing)
+  - [SEAT Approach](#seat-approach)
+- [Testing equality](#testing-equality)
+  - [Equality with a custom class](#equality-with-a-custom-class)
+- [Code and test coverage](#code-and-test-coverage)
+- [Summary](#summary)
+
+## Why do we write tests
 
   There are a myriad reasons why we, as developers, write tests for a code. As beginners its safe to safe that we write tests to prevent _regression_. By writing tests we can make changes to our code and avoid having to test everything manually because we already have tests that ensure our code does what its intended to do. Tests can be written before you write your code or after you've written your code. Most likely you will jump back and forth between the two, implementing code and testing code.
 
@@ -68,9 +88,11 @@ assert_equal(4, car.wheels)
 
 ### Skipping Tests
 
-### Expectation Syntax
+### Expectation Syntax vs Assertion
 
-### Summary
+### RSpec vs MiniTest
+
+### Minitest Summary
 
 - Minitest is an intuitive test library that comes with Ruby.
 - Using Minitest is very easy, and you shouldn't be afraid to play around with it.
@@ -331,7 +353,7 @@ Now we can use `#assert_equal` within the `#test_value_equality` test case to ef
 
 ## Code and test coverage
 
-
+- setup and teardown methods are executed before and after each test method is executed.
 
 ---
 
