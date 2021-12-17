@@ -69,7 +69,7 @@ class CarTest < MiniTest::Test
 end
 ```
 
-- `class CarTest < MiniTest::Test` here we are creating our _test class_(`CarTest`). By inheriting from `MiniTest::Test` this ensures that we have all the necessary methods for writing tests.
+- `class CarTest < MiniTest::Test` here we are creating our _test class_(`CarTest`). By inheriting from `MiniTest::Test` this ensures that we have all the necessary methods for writing tests. The test class should be named the same as the class we are testing with `Test` appended to it for clarification and when possible.
 - Within our test class(`CarTest`) we can write instance method that start with `test_` which lets Minitest that these methods are individual tests that need to be run.
 - Within each test we need to make some _assertions_. These assertions are what we are trying to verify. Prior to making assertions we must set up some data and/or objects to make assertions against.
 - We instantiate a new `Car` object and save it to local variable `car` within the `CarTest#test_wheels` method in order to verify that a newly created `Car` object has `4` wheels.
@@ -137,7 +137,7 @@ With larger projects there are generally 4 steps to writing a test:
 
 We have already been practicing working through steps 2 and 3 by building _test steps_ and _test cases_, but we also have a way to run some code prior to any of the test cases being ran that can then be sued within the tests themselves. This can reduce redundant code and make our test suite more efficient.
 
-By defining a `#setup` before all the test methods within our test class this method will execute and any code within it. We can use this to open files, or initialize an instance variable that is accessible anywhere within our test class.
+By defining a `#setup` before all the test methods within our test class this method will execute and any code within it before each _test case_ is executed, so that any objects or values instantiated/initialized within `#setup` will be the unmodified when passed into a test case. We can use this to open files, or initialize an instance variable that is accessible anywhere within our test class.
 
 ```ruby
 require 'minitest/autorun'
