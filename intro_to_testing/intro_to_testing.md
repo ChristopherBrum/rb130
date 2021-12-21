@@ -22,7 +22,7 @@
 
 ## Why do we write tests
 
-  There are a myriad reasons why we, as developers, write tests for a code. As beginners its safe to safe that we write tests to prevent _regression_. By writing tests we can make changes to our code and avoid having to test everything manually because we already have tests that ensure our code does what its intended to do. Tests can be written before you write your code or after you've written your code. Most likely you will jump back and forth between the two, implementing code and testing code.
+  There are a myriad reasons why we, as developers, write tests for a code. As beginners its safe to safe that we write tests to _prevent regression_. By writing tests we can make changes to our code and avoid having to test everything manually because we already have tests that ensure our code does what its intended to do. Tests can be written before you write your code or after you've written your code. Most likely you will jump back and forth between the two, implementing code and testing code.
 
   In order to simplify things and avoid throwing lots of confusing terminology around we will refer to the testing we are learning here as **unit testing**.
 
@@ -38,6 +38,9 @@ There is a LOT of jargon when it comes to testing but we'll keep things simple f
 
 - **Test Suite**: an entire set of tests that are separate from your program. Think of it like _all_ the tests that go with your program.
 - **Test**: a situation where a test is run. For instance; this _test_ is going to make sure that you raise an error when you enter your password incorrectly. A test can contain multiple ways of ensuring a piece of code responds appropriately.
+  A test can be broken down into smaller pieces as well.
+  - **Test Step**: Most basic level of testing. A test step verifies that a certain expectation is satisfied. Test cases employ an assertion.
+  - **Test Case**: A set of test steps to collectively test a piece of code/functionality and ensure it behaves as expected.
 **Assertion**: the actual verification step in which a test confirms that what is returned by your program is what is expected. A test can have one or more assertions.
 
 ### Whats in the test file
