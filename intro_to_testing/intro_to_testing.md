@@ -7,6 +7,7 @@
   - [Reading Testing Output](#reading-testing-output)
     - [Seed](#seed)
     - [Assertion Outputs](#assertion-outputs)
+    - [Output Summary](#output-summary)
   - [Failures](#failures)
   - [Minitest Reporters](#minitest-reporters)
   - [Skipping Tests](#skipping-tests)
@@ -129,9 +130,51 @@ On the third line all there is is a `.`, which seems inconsequential but is in f
 - `E`: When an error occurs an `E` is output.
 - `S`: When an assertion is skipped using the `skip` keyword, an `S` is output.
 
+#### Output Summary
+
+The bottom line will summarize the total number of tests ran, the total number of assertions evaluated, and the number of failures, errors and skips that occurred.
+
+```txt
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+```
+
 ### Failures
 
+If an assertion fails the last line will include the number of assertions that have failed and Ruby tells us the exact test that failed and what the expected and actual outputs were from that specific assertion. The `.` that previously represented `CarTest#test_wheels` test passing is now a `F` because the assertion failed.
+
+```txt
+Run options: --seed 94327
+
+# Running:
+
+F
+
+Finished in 0.001097s, 911.3428 runs/s, 911.3428 assertions/s.
+
+1) Failure:
+CarTest#test_wheels [test_file.rb:13]:
+Expected: 3
+  Actual: 4
+
+1 runs, 1 assertions, 1 failures, 0 errors, 0 skips
+```
+
 ### Minitest Reporters
+
+The standard output from MiniTest is pretty bland but `minitest/reporters` is another gem we can add that will make out test output a little prettier to look at. In can be added like so:
+
+```txt
+gem install minitest-reporters
+```
+
+And then include the following code within your test file. 
+
+```ruby
+require "minitest/reporters"
+Minitest::Reporters.use!
+```
+
+`minitest/reporters` replaces the `.`, `F`, `E`, and `S` symbols but gives you a color coded output that will let you know if a test passed, failed, or had errors/skips.
 
 ### Skipping Tests
 
