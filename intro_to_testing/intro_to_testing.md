@@ -178,7 +178,13 @@ Minitest::Reporters.use!
 
 ### Skipping Tests
 
+There may be times where you want to skip a certain test from being tested/executed and we can use the `skip` keyword to do so. Just add `skip` at the top of the test/method definition and the test will be skipped. The output will reflect the number of assertions skipped.
+
+You can pass an optional string argument to the `skip` keyword for a custom output.
+
 ### Expectation Syntax vs Assertion
+
+
 
 ### RSpec vs MiniTest
 
