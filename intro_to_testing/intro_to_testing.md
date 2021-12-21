@@ -45,6 +45,12 @@ There is a LOT of jargon when it comes to testing but we'll keep things simple f
 
 ### Whats in the test file
 
+In order to _require` a gem within our file we need to file add that gem to our library.
+
+```txt
+gem install minitest
+```
+
 Using our practice example, lets break down the components of a test.
 
 ```ruby
@@ -73,17 +79,42 @@ end
 ```
 
 - `class CarTest < MiniTest::Test` here we are creating our _test class_(`CarTest`). By inheriting from `MiniTest::Test` this ensures that we have all the necessary methods for writing tests. The test class should be named the same as the class we are testing with `Test` appended to it for clarification and when possible.
-- Within our test class(`CarTest`) we can write instance method that start with `test_` which lets Minitest that these methods are individual tests that need to be run.
-- Within each test we need to make some _assertions_. These assertions are what we are trying to verify. Prior to making assertions we must set up some data and/or objects to make assertions against.
+- Within our test class(`CarTest`) we can write instance method that start with `test_` which lets Minitest know that these methods are individual tests that need to be run.
+- Within each test we need to make some _assertions_. These assertions are what we are trying to verify. Prior to making assertions we must set up some data and/or objects to make assertions against. When running this file, the assertions will be used to determine whether the code being tested meets the expected behavior.
 - We instantiate a new `Car` object and save it to local variable `car` within the `CarTest#test_wheels` method in order to verify that a newly created `Car` object has `4` wheels.
 
-There a re many different types of assertions but for now we will focus on `assert_equals` which is inherited from `MiniTest::Assertions` takes 2 parameters; the first is the expected value, and the second is the test or actual value. In this case, we instantiate a new Car object, then check to see if it indeed has 4 wheels. Its common to have multiple assertions within one test.
+There are many different types of assertions but for now we will focus on `assert_equals`, which is inherited from `MiniTest::Assertions`. It takes 2 parameters:
+
+1. the first is the expected value.
+2. the second is the test or actual value.
+
+In this case, we instantiate a new Car object, then check to see if it indeed has 4 wheels. Its common to have multiple assertions within one test.
 
 ```ruby
 assert_equal(4, car.wheels)
 ```
 
 ### Reading Testing Output
+
+The Above code will output some thing like this when ran:
+
+```txt
+Run options: --seed 62238
+
+# Running:
+
+.
+
+Finished in 0.001097s, 911.3428 runs/s, 911.3428 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+```
+
+Above we see `--seed 62238`, this is Ruby's way of telling us the order in which the tests were performed. The order is random by default in order to ensure the test suite is not order dependent. But if we did indeed need to run the test in the same order we can run the file followed by `seed` and the seed id.
+
+```txt
+ruby test_file.rb --seed 62238
+```
 
 ### Failures
 
