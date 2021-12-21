@@ -5,6 +5,8 @@
   - [Vocabulary](#vocabulary)
   - [Whats in the test file](#whats-in-the-test-file)
   - [Reading Testing Output](#reading-testing-output)
+    - [Seed](#seed)
+    - [Assertion Outputs](#assertion-outputs)
   - [Failures](#failures)
   - [Minitest Reporters](#minitest-reporters)
   - [Skipping Tests](#skipping-tests)
@@ -96,6 +98,8 @@ assert_equal(4, car.wheels)
 
 ### Reading Testing Output
 
+#### Seed
+
 The Above code will output some thing like this when ran:
 
 ```txt
@@ -115,6 +119,15 @@ Above we see `--seed 62238`, this is Ruby's way of telling us the order in which
 ```txt
 ruby test_file.rb --seed 62238
 ```
+
+#### Assertion Outputs
+
+On the third line all there is is a `.`, which seems inconsequential but is in fact important. 
+
+- `.`: When an assertion passes a period will be output.
+- `F`: When an assertions fails it outputs a `F`.
+- `E`: When an error occurs an `E` is output.
+- `S`: When an assertion is skipped using the `skip` keyword, an `S` is output.
 
 ### Failures
 
