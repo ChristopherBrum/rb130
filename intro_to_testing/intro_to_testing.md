@@ -35,6 +35,8 @@
 
 **Minitest** can do everything that **RSpec** can, but in a more simple and straightforward way. RSpec goes out of its way to be read like natural English but at the sake of simplicity. RSpec is also a **Domain Specific Language** (DSL) for writing tests. Minitest can use a DSL but can also be used in a way that reads like standard Ruby code.
 
+MiniTest used to be included with Ruby but now requires a gem.
+
 ### Vocabulary
 
 There is a LOT of jargon when it comes to testing but we'll keep things simple for now.
@@ -184,9 +186,36 @@ You can pass an optional string argument to the `skip` keyword for a custom outp
 
 ### Expectation Syntax vs Assertion
 
+Thus far the testing format we have been using is referred to as _Assertion Testing_, or _assert-style_. But we have another testing syntax available to us with MiniTest called _expectation testing_ , or _spec-style_.
 
+With _assert-style_ testing we use a _test class_ to contain a test suite, instance methods to contain a test case, and _assertions_ are the _test steps_ that test whether a specific piece of code behaves acts as expected. This is written in standard Ruby code, and does not require a domain specific language (DSL) to create a test suite.
+
+With _spec-style_ testing a test suite is grouped into a `describe` block, test cases are written using the `#it` method, and instead of using _assertions_ we use _expectation matchers_ as _test steps_.
+
+The output is the same for both assert-style and spec-style testing so it is a matter of preference which style you use. Assert-style does not require you to learn a domain specific language but spec-style can read in a more human-readable way. `RSpec` uses a DSL so learning how to write tests using spec-style may be beneficial moving into a role as a developer.
+
+```ruby
+require 'minitest/autorun'
+require_relative 'car'
+
+describe 'Car#wheels' do                 # describe block for test suite
+  it 'has 4 wheels' do                   # it method for a test case
+    car = Car.new
+    _(car.wheels).must_equal 4           # this is the expectation for a test step
+  end
+end
+```
 
 ### RSpec vs MiniTest
+
+Differences between MiniTest and RSpec
+
+- MiniTest can be written with standard Ruby code, RSpec cannot.
+
+Similarities between MiniTest and RSpec
+
+- Both run tests, both randomize tests, both _can_ use a DSL.
+- Output from both styles is the same.
 
 ### Minitest Summary
 
