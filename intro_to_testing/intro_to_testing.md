@@ -247,6 +247,8 @@ Sometimes we need to assert something other than equality, for instance whether 
 
 ### Refutations
 
+Refutations are the opposite of assertions, they _refute_ as apposed to assert whether an a piece of code behaves as expected. Every assertion has a corresponding refutation. `refute` passes if the object passed to it is falsy.
+
 ---
 
 ## The general approach for testing
