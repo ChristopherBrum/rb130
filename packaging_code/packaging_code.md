@@ -12,6 +12,7 @@
     - [Which file was Required?](#which-file-was-required)
     - [Multiple Gem Versions](#multiple-gem-versions)
 - [Ruby Version Managers](#ruby-version-managers)
+  - [What are Ruby Version Managers?](#what-are-ruby-version-managers)
 
 ## The Ruby Toolbox
 
@@ -180,6 +181,8 @@ These are all 'hacks' and are only good in the short term. What we really want t
 
 ## Ruby Version Managers
 
+### What are Ruby Version Managers
 
+### Which Ruby Version Manager should I use?
 
 ---
