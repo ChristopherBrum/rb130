@@ -18,6 +18,7 @@
   - [Running Apps with Bundler](#running-apps-with-bundler)
   - [Bundle exec](#bundle-exec)
 - [Rake](#rake)
+- [Relationships](#relationships)
 - [Links](#links)
 
 ## Ruby Installation
@@ -354,6 +355,26 @@ For instance, to release a new version of an existing program, you may want to:
 - Make a complete backup of your local repo.
 
 Even though these things are easy enough to do on their own it makes things simpler to be able to setup these tasks, dictate the order with which they will be executed and simply enter one command and run them all. It also avoids simple syntactical errors that repeatedly running tasks manually can run into.
+
+---
+
+## Relationships
+
+- One thing to keep in mind as you become more comfortable with the Ruby tools is how they relate to each other.
+
+- Your Ruby Version Manager is at the top level -- it controls multiple installations of Ruby and all the other tools.
+
+- Within each installation of Ruby, you can have multiple Gems -- even 1000s of Gems if you want. Each Gem becomes accessible to the Ruby version under which it is installed. If you want to run a Gem in multiple versions of Ruby, you need to install it in all of the versions you want to use it with.
+
+- Each Gem in a Ruby installation can itself have multiple versions. This frequently occurs naturally as you install updated Gems, but can also be a requirement; sometimes you just need a specific version of a Gem for one project, but want to use another version for your other projects.
+
+- Ruby projects are programs and libraries that make use of Ruby as the primary development language. Each Ruby project is typically designed to use a specific version (or versions) of Ruby, and may also use a variety of different Gems.
+
+- The Bundler program is itself a Gem that is used to manage the Gem dependencies of your projects. That is, it determines and controls the Ruby version and Gems that your project uses, and attempts to ensure that the proper items are installed and used when you run the program.
+
+- Finally, Rake is another Gem. It isn't tied to any one Ruby project, but is, instead, a tool that you use to perform repetitive development tasks, such as running tests, building databases, packaging and releasing the software, etc. The tasks that Rake performs are varied, and frequently change from one project to another; you use the Rakefile file to control which tasks your project needs.
+
+---
 
 ## Links
 
