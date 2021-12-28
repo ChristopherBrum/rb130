@@ -181,8 +181,103 @@ These are all 'hacks' and are only good in the short term. What we really want t
 
 ## Ruby Version Managers
 
-### What are Ruby Version Managers
+**What?**: Ruby Version Managers are programs that can be installed in order to manage and use multiple versions of Ruby, the utilities associated with those versions (i.e. `irb`), and the RubyGems installed for each version.
 
-### Which Ruby Version Manager should I use?
+**Why?**: Ruby is an evolving language and with each version features are added and removed. At some point you will be working with a program that is running on an older version of Ruby and a RVM will allow you to switch between the different versions required for different programs.
+
+**How?**: _RVM_ and _rbenv_ are the two most commonly used Ruby version managers. Their approach is different but the accomplish the same things. But a few things to keep in mind:
+
+- RVM has some problems when used on a Mac so rbenv may be less troublesome.
+
+Overall distinctions between `RVM` and `rbenv`
+
+RVM:
+
+- Can have issues when running on a Mac.
+- Easier to install and use on Cloud9 and Linux systems.
+- Has more features out of "the box"
+- Most;y functions by altering your `PATH` variable and replacing the `cd` command with a `RVM` shell-function.
+
+rbenv:
+
+- Works better for Mac.
+- Out of the box lacking a few features, but rbenv plugins make up for that.
+- Mostly works by altering the `PATH` variable and some other environmental variables.
+
+### RVM
+
+Most of the work of a Ruby version manager is done behind the scenes. Essentially, by using the appropriate shell command (`rvm`) and specifying a Ruby version, the version manager will alter the PATH that the shell command operates from to work out of the directory for the Ruby version specified.
+
+Some common commands:
+
+```txt
+rvm use 2.1.1
+```
+
+Tells RVM to switch to Ruby version 2.1.1.
+
+```txt
+rvm list rubies
+```
+
+Tells RVM to list the versions of Ruby you already have installed.
+
+```txt
+rvm install 2.2.3
+```
+
+Tells RVM to install Ruby version 2.2.3 (may get warnings about deprecated versions)
+
+```txt
+rvm use 2.1.1 --default
+rvm use default
+```
+
+Tells RVM to set a RUby version as default and then switches to default.
+
+An easier and less error prone way of assuring you're using the appropriate Ruby version for any of your projects is to add `.ruby-version` file within the projects root directory that only contains the Ruby version. To do this navigate to the root directory of the project and enter:
+
+```txt
+rvm --ruby-version use 2.2.2 (or the desired Ruby version)
+```
+
+From there set your Ruby default version so that Ruby automatically switches for you.
+
+### rbenv
+
+From a functionality standpoint RVM and rbenv appear very similar, but under the hood they function differently. rbenv uses a sets scripts called **_shims_** that share the name of various Ruby and gem programs, and live within a `shims` subdirectory of the main rbenv directory. This sub-directory is included in the rbenv PATH prior to any gems or Ruby programs so that it checks the `shims` directory first. Then runs the appropriate shim script and from within the script the `rbenv gem/ruby PROGRAM` is ran, which is where the appropriate version of Ruby is determined.
+
+> That all sounds pretty complex, and it is. However, in practice, it's mostly invisible. If you want to run, say, rubocop from the Ruby 2.2.2 directory, you tell rbenv to use Ruby 2.2.2, then run the rubocop command. Magically, the system finds the rubocop shim, the shim runs rbenv exec rubocop, and that runs the Ruby 2.2.2 version of rubocop.
+
+rbenv does not provide a way to directly install gems but [ruby-build](https://github.com/rbenv/ruby-build) takes care of that problem.
+
+You can set a default Ruby version by using the `global` command.
+
+```txt
+rbenv global 2.3.1
+```
+
+And by navigating to a projects root directory you can set a default Ruby version for that project using the `local` command.
+
+```txt
+cd ~/src/magic
+rbenv local 2.0.0
+```
 
 ---
+
+## Bundler
+
+**What?**: Bundler is a _dependency manager_. The same as we use Ruby version managers to manage different versions of Ruby, and even though they can be used to manage Gem dependencies, the favored way to do so is by using a dependency manager, and Bundler is the most commonly used one with Ruby.
+
+**Why?**: A dependency manager allows us to switch between different versions of RubyGems as needed throughout different projects that we're working on.
+
+**How?**:
+
+### Gemfile and Gemfile.lock
+
+The `Gemfile` is a Ruby file that uses a DSL to tell Bundler which version of Ruby and which RubyGems versions to use within a program. After creating a `Gemfile` run the `bundle install` command, which will scan the `Gemfile` and downloads all the dependencies listed and saves them in a `Gemfile.lock` file. This includes the gems specifically listed in `Gemfile` as well as all the gems those depend on.
+
+> Note: the RubyGem is named _Bundler_ but the command is _bundle_.
+
+For more info here's the [Bundler Dcs](https://bundler.io/docs.html)
