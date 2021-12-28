@@ -2,282 +2,54 @@
 
 - [The Ruby Toolbox](#the-ruby-toolbox)
   - [What are Ruby tools?](#what-are-ruby-tools)
-- [Ruby Installation](#ruby-installation)
-- [Gems](#gems)
-  - [What are gems?](#what-are-gems)
-  - [Gems, Ruby and your computer](#gems-ruby-and-your-computer)
-    - [The Remote Library](#the-remote-library)
-    - [The Local Library](#the-local-library)
-    - [Gems and your file system](#gems-and-your-file-system)
-    - [Which file was Required?](#which-file-was-required)
-    - [Multiple Gem Versions](#multiple-gem-versions)
-- [Ruby Version Managers](#ruby-version-managers)
-  - [What are Ruby Version Managers?](#what-are-ruby-version-managers)
+  - [Ruby Installation](#ruby-installation)
+  - [Gems](#gems)
+  - [Ruby Version Managers](#ruby-version-managers)
+  - [Bundler](#bundler)
+  - [Rake](#rake)
 
 ## The Ruby Toolbox
 
-### What are Ruby tools
-
----
-
-## Ruby Installation
-
-- finding mac _system Ruby_ version
-- root access on a Mac
-- On Mac you should use Ruby Version Manager (RVM) to install and run the rubies you need
-- install homebrew, a package manager for Mac. Used to install and manage tools helpful in Ruby development.
-- system Ruby
-  - `which` command line command
-  - finding system Ruby
-  - `rbenv` or `shims` present within the path of your _system Ruby_ shows that you are using a version of Ruby installed by **rbenv** version manager.
-  - `rvm` present within the path of your _system Ruby_ means you're using a version of Ruby installed by **RVM** Ruby version manager.
-- `ruby -v` entered in the command line will return the current version of Ruby is being used.
-
-What gets installed with Ruby?
-
-- The core library
-- The standard Library
-- The irb REPL (Read Evaluate Print Loop)
-- The rake utility: a tool to automate Ruby development tasks
-- The gem command: a tool to manage RubyGems
-- Documentation tools (`rdoc` and `ri`)
-
----
-
-## Gems
-
-- With a standard Ruby installation both Ruby's core library and standard library are made available.
-  - Whats the difference between these two?
+### Ruby Installation
 
-### What are gems
+- Most importantly, we've pointed out that the system Ruby may not be suitable for development (on Cloud9, this isn't a concern). We also briefly touched on what gets installed with Ruby.
 
-- **RubyGems**, referred to as **gems**, are packages of code that you can download, install and use within your Ruby program or the command line.
-- All versions of Ruby since 1.9 make the `gem` command available for managing gems.
-- Some gems we are already familiar with are:
-  - `rubocop`: This Gem checks for Ruby style guide violations and other potential issues in your code.
-  - `pry`: This Gem helps debug Ruby programs.
-  - `sequel`: This Gem provides a set of classes and methods that simplify database access.
-  - `rails`: This Gem provides a web application framework that simplifies and speeds web applications development.
-  - `minitest`: This gem gives us access to all of the testing features and methods included within MiniTest.
-- Installing a gem is simple. Go to the [RubyGems website](https://rubygems.org/), choose a gem, then enter `gem install` with the gem name into the command line. This will be all you need to do for many gems but read their documentation first.
-- The [RubyGems Basics](https://guides.rubygems.org/rubygems-basics/) page and the [Command Reference](https://guides.rubygems.org/command-reference/) pages provide more in depth information regarding gems.
+- Much of the development process with any programming language is about finding and fixing problems. Sometimes, though, these problems are more about the tools that you use to write, test, build, document, analyze, and distribute the software. To fix these tool-related problems, you need to know your development environment and how the various tools interact with that environment. Ruby is no exception.
 
-### Gems, Ruby and your computer
 
-#### The Remote Library
+### Gems
 
-Because all Ruby versions from 1.9 onward contain the `gem` program, we can grab gems and add them to our program from the remote Gem library. Most often we will search and find the gem needed in the [RubyGems Library](https://rubygems.org/gems) but sometimes you will need to find the gems from a specialized library(ie. from a company, employer, school). Further information about these gems should be available from the gems 'homepage' or 'documentation'. Once the appropriate gem is found run `gem install GEM_NAME` and Ruby will connect to the remote library.
+- RubyGems, or Gems for short, are packages of code that you can download, install, and use in your Ruby programs or from the command line. The gem command manages your Gems.
 
-#### The Local Library
+- RubyGems are organized on your filesystem, and seen how to deal with some common issues that arise when working with Gems.
 
-When you install a gem from a remote library Ruby adds those files to an appropriate folder within your local file system. Precisely where depends on a number of things, like:
+- You can install multiple versions of Ruby on your system, and that such multi-version systems take this into account when managing your Gems. 
 
-- whether you're using a system Ruby that requires root access
-- a user maintainable Ruby
-- the specific Ruby version
-- whether you're using a version manager (e.g. RVM, rbenv)
+### Ruby Version Managers
 
-Fortunately Ruby knows exactly where to put the files in order for them to work so there's usually nothing else required after installing the gems.
+- Ruby version managers let you manage multiple versions of Ruby, the utilities (such as irb) associated with each version, and the RubyGems installed for each Ruby. With version managers, you can install and uninstall ruby versions and gems, and run specific versions of ruby with specific programs and environments.
 
-#### Gems and your file system
+- The two main version managers, RVM and rbenv, are similar in function, with little to distinguish between the two for most developers. By default, RVM has more features, but rbenv plugins provide much of the functionality not provided by the base install of rbenv. RVM works by dynamically managing your environment, mostly by modifying your PATH variable and replacing the built-in cd command with an RVM-aware shell function; rbenv works by just modifying your PATH and some other environment variables.
 
-Occasionally you may need access to the source code for a gem, and if you are without internet you will need to navigate the file system to find the Gem's source code. **Important to not alter the source code in anyway**.
+- Ruby programs often need a specific version of Ruby, and specific versions of the Gems it uses. Ruby version managers take care of most of the issues arising from these differing requirements, but sometimes you'll find that they aren't enough. For example, you may need to use Ruby 2.2.2 for two different projects instead of your default 2.3.1, but you may also need separate versions of the Rails Gem, say 4.2.7 for one project, and version 5.0.0 for the other. While both RVM and rbenv (with the aid of a plugin) can handle these requirements, the easier and more common path is to use a RubyGem called Bundler.
 
-Using the `gem` command can give you a shortcut to finding the source code in you file system. The `gem env` command will output a list of information regarding your RubyGems installation.
+### Bundler
 
-```txt
-➜  rb130 git:(main) gem env
-RubyGems Environment:
-  - RUBYGEMS VERSION: 3.1.2
-  - RUBY VERSION: 2.7.1 (2020-03-31 patchlevel 83) [x86_64-darwin20]
-  - INSTALLATION DIRECTORY: /Users/christopherbrum/.rvm/gems/ruby-2.7.1
-  - USER INSTALLATION DIRECTORY: /Users/christopherbrum/.gem/ruby/2.7.0
-  - RUBY EXECUTABLE: /Users/christopherbrum/.rvm/rubies/ruby-2.7.1/bin/ruby
-  - GIT EXECUTABLE: /usr/bin/git
-  - EXECUTABLE DIRECTORY: /Users/christopherbrum/.rvm/gems/ruby-2.7.1/bin
-  - SPEC CACHE DIRECTORY: /Users/christopherbrum/.gem/specs
-  - SYSTEM CONFIGURATION DIRECTORY: /Users/christopherbrum/.rvm/rubies/ruby-2.7.1/etc
-  - RUBYGEMS PLATFORMS:
-    - ruby
-    - x86_64-darwin-20
-  - GEM PATHS:
-     - /Users/christopherbrum/.rvm/gems/ruby-2.7.1
-     - /Users/christopherbrum/.rvm/rubies/ruby-2.7.1/lib/ruby/gems/2.7.0
-  - GEM CONFIGURATION:
-     - :update_sources => true
-     - :verbose => true
-     - :backtrace => false
-     - :bulk_threshold => 1000
-  - REMOTE SOURCES:
-     - https://rubygems.org/
-  - SHELL PATH:
-     - /Users/christopherbrum/.rvm/gems/ruby-2.7.1/bin
-     - /Users/christopherbrum/.rvm/gems/ruby-2.7.1@global/bin
-     - /Users/christopherbrum/.rvm/rubies/ruby-2.7.1/bin
-     - /Users/christopherbrum/.nvm/versions/node/v12.22.1/bin
-     - /usr/local/bin
-     - /usr/bin
-     - /bin
-     - /usr/sbin
-     - /sbin
-     - /Library/Apple/usr/bin
-     - /Users/christopherbrum/.rvm/bin
-```
+- Bundler lets you describe exactly which Ruby and Gems you want to use with your Ruby apps. Specifically, it lets you install multiple versions of each Gem under a specific version of Ruby and then use the proper version in your app.
 
-RUBY VERSION
+- Bundler is a RubyGem, so you must install it like a normal Gem: gem install bundler.
 
-- This is version of Ruby associated with the `gem` command ran.
+- To use Bundler, you provide a file named Gemfile that describes the Ruby and Gem versions you want for your app. You use a DSL described on the Bundler website to provide this information.
 
-RUBY EXECUTABLE
+- Bundler uses the Gemfile to generate a Gemfile.lock file via the bundle install command. Gemfile.lock describes the actual versions of each Gem that your app needs, including any Gems that the Gems listed in Gemfile depend on. The bundler/setup package tells your Ruby program to use Gemfile.lock to determine which Gem versions it should load.
 
-- The location of the `ruby` command that you should use with gems managed by this `gem` command.
+- The `bundle exec` command ensures that executable programs installed by Gems don't interfere with your app's requirements. For instance, if your app needs a specific version of rake but the default version of rake differs, `bundle exec` ensures that you can still run the specific rake version compatible with your app.
 
-INSTALLATION DIRECTORY
+### Rake
 
-- Where `gem` installs Gems by default. varies based on Ruby version.
+- Rake is RubyGem that automates common functions required to build, test, package, and install programs.
 
-USER INSTALLATION DIRECTORY
+- It is part of every modern Ruby installation so it does not need to be installed manually.
 
-- Depending on your Ruby installation and options you pass to `gem`, `gem` may install Gems somewhere in your home directory instead of a system-level directory. This is the location in your home directory that `gem` uses in such cases.
+- You can write rake tasks to automate automate anything you want to do with your app during the development, testing, and release cycles.
 
-EXECUTABLE INSTALLATION DIRECTORY
-
-- Some Gems provide commands that you can use directly from a terminal prompt; gem places those commands in this directory.
-
-REMOTE SOURCES
-
-- The remote library used by this gem installation.
-
-SHELL PATH
-
-- Value of your shell's PATH variable; tells your shell which directories it should search to find executable program files.
-
-#### Which file was Required
-
-Sometimes you will get an error because a gem feature that you need is not accessible because the gem version is not the one you need and that the feature doesn't exist. In cases like this you'll need to know the version of the Gem your program loaded. You can run a piece of debugging code shortly after the point you require the Gem, like `binding.pry`, or you can run:
-
-```txt
-puts $LOADED_FEATURES.grep(/test_file\.rb/)
-```
-
-Which will output something like:
-
-```txt
-/usr/local/rvm/gems/ruby-2.2.2/gems/freewill-1.0.0/lib/test_file.rb
-```
-
-In this case `test_file-1.0.0` specifies the Gem 'freewill' has loaded version 1.0.0.
-
-#### Multiple Gem Versions
-
-Occasionally you will come across a situation where it appears that multiple Gem versions have been loaded. By default Ruby will run the most up to date version off a Gem, which can cause issues if we need to run an older version. In this case we can specify that we want to use a specific version of a Gem in a few ways:
-
-- Provide an absolute path name to `require`.
-- Add an appropriate `-I` option to the Ruby invocation.
-- Modify $LOAD_PATH prior to requiring `somegem`.
-- Modify the `RUBYLIB` environment variable.
-
-These are all 'hacks' and are only good in the short term. What we really want to use id **Bundler**.
-
-## Ruby Version Managers
-
-**What?**: Ruby Version Managers are programs that can be installed in order to manage and use multiple versions of Ruby, the utilities associated with those versions (i.e. `irb`), and the RubyGems installed for each version.
-
-**Why?**: Ruby is an evolving language and with each version features are added and removed. At some point you will be working with a program that is running on an older version of Ruby and a RVM will allow you to switch between the different versions required for different programs.
-
-**How?**: _RVM_ and _rbenv_ are the two most commonly used Ruby version managers. Their approach is different but the accomplish the same things. But a few things to keep in mind:
-
-- RVM has some problems when used on a Mac so rbenv may be less troublesome.
-
-Overall distinctions between `RVM` and `rbenv`
-
-RVM:
-
-- Can have issues when running on a Mac.
-- Easier to install and use on Cloud9 and Linux systems.
-- Has more features out of "the box"
-- Most;y functions by altering your `PATH` variable and replacing the `cd` command with a `RVM` shell-function.
-
-rbenv:
-
-- Works better for Mac.
-- Out of the box lacking a few features, but rbenv plugins make up for that.
-- Mostly works by altering the `PATH` variable and some other environmental variables.
-
-### RVM
-
-Most of the work of a Ruby version manager is done behind the scenes. Essentially, by using the appropriate shell command (`rvm`) and specifying a Ruby version, the version manager will alter the PATH that the shell command operates from to work out of the directory for the Ruby version specified.
-
-Some common commands:
-
-```txt
-rvm use 2.1.1
-```
-
-Tells RVM to switch to Ruby version 2.1.1.
-
-```txt
-rvm list rubies
-```
-
-Tells RVM to list the versions of Ruby you already have installed.
-
-```txt
-rvm install 2.2.3
-```
-
-Tells RVM to install Ruby version 2.2.3 (may get warnings about deprecated versions)
-
-```txt
-rvm use 2.1.1 --default
-rvm use default
-```
-
-Tells RVM to set a RUby version as default and then switches to default.
-
-An easier and less error prone way of assuring you're using the appropriate Ruby version for any of your projects is to add `.ruby-version` file within the projects root directory that only contains the Ruby version. To do this navigate to the root directory of the project and enter:
-
-```txt
-rvm --ruby-version use 2.2.2 (or the desired Ruby version)
-```
-
-From there set your Ruby default version so that Ruby automatically switches for you.
-
-### rbenv
-
-From a functionality standpoint RVM and rbenv appear very similar, but under the hood they function differently. rbenv uses a sets scripts called **_shims_** that share the name of various Ruby and gem programs, and live within a `shims` subdirectory of the main rbenv directory. This sub-directory is included in the rbenv PATH prior to any gems or Ruby programs so that it checks the `shims` directory first. Then runs the appropriate shim script and from within the script the `rbenv gem/ruby PROGRAM` is ran, which is where the appropriate version of Ruby is determined.
-
-> That all sounds pretty complex, and it is. However, in practice, it's mostly invisible. If you want to run, say, rubocop from the Ruby 2.2.2 directory, you tell rbenv to use Ruby 2.2.2, then run the rubocop command. Magically, the system finds the rubocop shim, the shim runs rbenv exec rubocop, and that runs the Ruby 2.2.2 version of rubocop.
-
-rbenv does not provide a way to directly install gems but [ruby-build](https://github.com/rbenv/ruby-build) takes care of that problem.
-
-You can set a default Ruby version by using the `global` command.
-
-```txt
-rbenv global 2.3.1
-```
-
-And by navigating to a projects root directory you can set a default Ruby version for that project using the `local` command.
-
-```txt
-cd ~/src/magic
-rbenv local 2.0.0
-```
-
----
-
-## Bundler
-
-**What?**: Bundler is a _dependency manager_. The same as we use Ruby version managers to manage different versions of Ruby, and even though they can be used to manage Gem dependencies, the favored way to do so is by using a dependency manager, and Bundler is the most commonly used one with Ruby.
-
-**Why?**: A dependency manager allows us to switch between different versions of RubyGems as needed throughout different projects that we're working on.
-
-**How?**:
-
-### Gemfile and Gemfile.lock
-
-The `Gemfile` is a Ruby file that uses a DSL to tell Bundler which version of Ruby and which RubyGems versions to use within a program. After creating a `Gemfile` run the `bundle install` command, which will scan the `Gemfile` and downloads all the dependencies listed and saves them in a `Gemfile.lock` file. This includes the gems specifically listed in `Gemfile` as well as all the gems those depend on.
-
-> Note: the RubyGem is named _Bundler_ but the command is _bundle_.
-
-For more info here's the [Bundler Dcs](https://bundler.io/docs.html)
