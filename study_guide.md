@@ -12,6 +12,8 @@
 - When can you pass a block to a method
 - &:symbol
 - Arity of blocks and methods
+  - Lambdas are types of Proc's. Technically they are both Proc objects. An implicit block is a grouping of code, a type of closure, it is not an Object.
+  - Lambdas enforce the number of arguments passed to them. Implicit blocks and Procs do not enforce the number of arguments passed in.
 
 ## Testing With Minitest
 
@@ -24,4 +26,3 @@
 
 - Purpose of core tools
 - Gemfiles
-
