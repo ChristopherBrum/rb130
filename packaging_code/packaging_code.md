@@ -7,6 +7,8 @@
   - [Ruby Version Managers](#ruby-version-managers)
   - [Bundler](#bundler)
   - [Rake](#rake)
+- [Project Directory](#project-directory)
+- [Setting up the Gemfile](#setting-up-the-gemfile)
 
 ## The Ruby Toolbox
 
@@ -16,14 +18,13 @@
 
 - Much of the development process with any programming language is about finding and fixing problems. Sometimes, though, these problems are more about the tools that you use to write, test, build, document, analyze, and distribute the software. To fix these tool-related problems, you need to know your development environment and how the various tools interact with that environment. Ruby is no exception.
 
-
 ### Gems
 
 - RubyGems, or Gems for short, are packages of code that you can download, install, and use in your Ruby programs or from the command line. The gem command manages your Gems.
 
 - RubyGems are organized on your filesystem, and seen how to deal with some common issues that arise when working with Gems.
 
-- You can install multiple versions of Ruby on your system, and that such multi-version systems take this into account when managing your Gems. 
+- You can install multiple versions of Ruby on your system, and that such multi-version systems take this into account when managing your Gems.
 
 ### Ruby Version Managers
 
@@ -53,3 +54,57 @@
 
 - You can write rake tasks to automate automate anything you want to do with your app during the development, testing, and release cycles.
 
+---
+
+## Project Directory
+
+A software project will be comprised of a number of things, including but not limited to:
+
+- Source code (Ruby in our case, but any other programming language used within your project live Javascript)
+- Tests
+- Assets
+- HTML files
+- Databases
+- Configuration files
+
+There is a generally agreed upon practice of where things should go across projects. Directory names and files names should also follow a standard of containing only letters, numbers and underscores. Avoid using spaces when naming directories as that can lead to unexpected behaviors.
+
+- **Source code** should go in the `lib` directory found within the root directory of the project.
+- **Tests** should go in the `test` directory found within the root directory of the project.
+
+## Setting up the Gemfile
+
+We will use the Bundler gem to configure the `Gemfile`, which determines the dependencies of your project. Dependencies in this file will let other developers know how to run your project.
+
+A `Gemfile` normally needs 4 pieces of information:
+
+1. **Where Bundler should look for RubyGems it needs to install.**
+
+    This is usually done through the [RubyGems site](https://rubygems.org/) but sometimes may come from another source(i.e. company, school, etc.). It is included in your `Gemfile` like this:
+
+    ```ruby
+    source 'https://rubygems.org' # or other source url
+    ```
+
+2. Do you need a `.gemspec` file?
+
+    Bundler checks for a `gemspec` file when the `Gemfile` contains a `gemspec` statement. If we don't have a `gemspec` statement it won't.
+
+3. What version of Ruby does your project need?(recommended but not required)
+
+    Typically you will want to use the most up to date version of Ruby that's out but that's not always possible. This is not required but is a good idea to specify the version you want, otherwise Bundler will use the version set as default. The version of Ruby can be added like this:
+
+    ```ruby
+    ruby '2.5.0'
+    ```
+
+4. What RubyGems does your program use?
+
+    Determine what Gems have been required throughout your program, even code only ran for testing or automation. You won't always know what version of a Gem is required though, but you can look in your Gem directories to determine which versions are needed. You can require the appropriate Gems like this:
+
+    ```ruby
+    gem 'minitest', '~> 5.10'
+    gem 'minitest-reporters', '~> 1.1'
+    ```
+
+If you add more Gems in your program later you must add them to your `Gemfile` and then run `bundle install` to add them to `Gemfile.lock`.
