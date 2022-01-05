@@ -14,7 +14,12 @@
     - [Alternation](#alternation)
     - [Control Character Escapes](#control-character-escapes)
     - [Ignoring Case](#ignoring-case)
-    - [Summary](#summary)
+    - [Basic Matching Summary](#basic-matching-summary)
+  - [Character Classes](#character-classes)
+    - [Set of Charcters](#set-of-characters)
+    - [Range of Characters](#range-of-characters)
+    - [Negated Classes](#negatred-classes)
+    - [Character Classes Summary](#character-classes-summary)
 
 ---
 
@@ -69,6 +74,8 @@ For JavaScript:
 ## Regular Expressions
 
 ### Basic Matching
+
+At its most simplest form regex can be used to match substrings within a string or body of text.
 
 #### Alphanumerics
 
@@ -146,3 +153,15 @@ launchschool.com
 #### Summary
 
 ---
+
+### Character Classes
+
+
+    
+#### Set of Charcters
+    
+#### Range of Characters
+    
+#### Negated Classes
+    
+#### Character Classes Summary

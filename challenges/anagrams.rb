@@ -14,7 +14,7 @@ selects correct sublist containingall anagrams
 
 Implicit Rules:
 - anagram: words that have the same letters organized differently
-- #match emthod
+- #match method
   - if no matching strings are in the list, return []
   - if match is found, return all matches in an array
   - multiple matches can be returned in an array
