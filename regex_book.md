@@ -354,10 +354,117 @@ This code will match with `One` , `Two`, `Red`, `123`, and `456`.
 
 #### Zero or More
 
+The _zero or more_ quantifier(`*`) points at a character and will match with that character is there _zer_ or more instances of that character within the string. For example the regex pattern `/\b\d\d\d\d*\b/` when searching through the following code:
+
+```txt
+Four and 20 black birds
+365 days in a year, 100 years in a century.
+My phone number is 222-555-1212.
+My serial number is 345678912.
+```
+
+...will match with `365`, `100`, `222`, `555`, `1212`, and `345678912`, but it does not match `20`. This is because the pattern(`/\b\d\d\d\d*\b/`) is being broken down by the regex engine like so:
+
+| Pattern | Explanation |
+|---|---|
+| `\b` | Starting at a word boundary |
+| `\d` | A single digit followed by ... |
+| `\d` | a single digit followed by ... |
+| `\d` | a single digit followed by ... |
+| `\d*` | Zero or more additional digits |
+| `\b` | Ending with a word boundary |
+
+Here's another way to see this is to try the regex `/co*t/` against these strings:
+
+```txt
+ct
+cot
+coot
+cooot
+```
+
+Each of these strings match the regex pattern, even the one without an `o`.
+
+> The quantifier always applies to one pattern; the pattern it finds to the left of the quantifier.
+
+But you can group within parenthesis to define the pattern you want to apply `*` to. For example the regex pattern `/1(234)*5/` matched again these strings:
+
+```txt
+15
+12345
+12342342345
+1234235
+
+# The first 3 patterns match
+# 15
+# 12345
+# 12342342345
+```
+
+The first 3 strings match the pattern because the `*` quantifier is saying that `234` can occur zero or more times between `1` and `5` and will result in a match.
+
 #### One or More
+
+The `+` quantifier is nearly identical to the `*` quantifier except that it matches one or more occurrences of a pattern. If we take the example for early and(`/\b\d\d\d+\b/`) and swap out the `*` for a `+`, we can see that;
+
+```txt
+Four and 20 black birds
+365 days in a year, 100 years in a century.
+My phone number is 222-555-1212.
+My serial number is 345678912.
+```
+
+...will match with `365`, `100`, `222`, `555`, `1212`, and `345678912`.
+
+But if we use the last example from zero or more quantifiers we can see that the regex pattern `/1(234)+5/` matched again these strings:
+
+```txt
+15
+12345
+12342342345
+1234235
+
+# The second and third patterns match
+# 12345
+# 12342342345
+```
+
+...does not match with the first example because the pattern `234` does not occur one or more times.
 
 #### Zero or One
 
+In some situation you made need to determine whether a pattern occurs once, or doesn't occur at all. That's where the `+` quantifier comes in. If you need to test whether a string contains the words `cot` or `coot`, but don't want to match against `ct` or `cooot`, you can use `/coo?t/`, which matches a `c` followed by an `o` followed by an _optional_ `o` followed by a `t`.
+
+```txt
+Scott scoots but doesn't act cooot.
+```
+
+`cot` and `coot` in the first two words match.
+
+This quantifier can be very useful when working with dates that can be stored as `20170111` or `2017-01-11` so the `-` is optional.
+
 #### Ranges
 
+Some situations may call for you to test whether a phone number has exactly 10 digits to it, or you must find all words with exactly 6 letters, or find words that contain 5-8 characters. This is whether the _range quantifier_ comes in handy. The range quantifier consists of a pair of curly braces(`{}`) with one or 2 numbers, and an optional `,` in it.
+
+- `p{m}` matches precisely `m` occurrences of the pattern `p`.
+- `p{m,}` matches `m` or more occurrences of `p`.
+- `p{m,n}` matches `m` or more occurrences of `p`, but not more than `n`.
+
+If you need to test a string to see if it contains precisely ten consecutive digits (perhaps it represents a US-style phone number), you can try it with the regex `/\b\d{10}\b/` and these strings:
+
+```txt
+2225551212 1234567890 123456789 12345678900
+```
+
+The first 2 digits match because the are comprised of exactly 10 digits.
+
+To match numbers that are at least 10 digits you would use this regex pattern: `/\b\d{10,}\b/`
+
+And to match numbers that are between 5 and 8 digits you would use this regex pattern: `/\b\d{5,8}\b/`
+
 #### Greediness
+
+The quantifiers we've been using sof far are considered **greedy** because they always match the longest possible string that they can. If we're matching `/a[abc]*c/` against `xabcbcbacy`, this pattern matches `abcbcbac`, not `abc` or `abcbc` both of which could match the pattern, but are shorter than the final match string. This is generally not an issue but can be confusing when it comes up.
+
+Most cases greediness is what we want but sometimes we do want our pattern to be matched in a **lazy** way. To do so, we can add another `?` quantifier after the initial one and it will make the quantifier lazy. For example, `/a[abc]*?c/` matches `abc` and `ac` in `xabcbcbacy`.
