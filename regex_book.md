@@ -468,3 +468,250 @@ And to match numbers that are between 5 and 8 digits you would use this regex pa
 The quantifiers we've been using sof far are considered **greedy** because they always match the longest possible string that they can. If we're matching `/a[abc]*c/` against `xabcbcbacy`, this pattern matches `abcbcbac`, not `abc` or `abcbc` both of which could match the pattern, but are shorter than the final match string. This is generally not an issue but can be confusing when it comes up.
 
 Most cases greediness is what we want but sometimes we do want our pattern to be matched in a **lazy** way. To do so, we can add another `?` quantifier after the initial one and it will make the quantifier lazy. For example, `/a[abc]*?c/` matches `abc` and `ac` in `xabcbcbacy`.
+
+## Using Regular Expressions
+
+1. Write a method that returns true if its argument looks like a URL, false if it does not.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one srting as an argument
+- if the string has the characterteristics of a URL, return true
+- Otherwise, return false
+
+Implicit
+- cannot have white space before or after the url
+- cannot have additional characters before or after the url
+- must start with 'http'
+- can optionally have a 's' after
+- must have `://` after
+- must have at least one character after
+
+DS
+- string input
+- boolean output
+
+Algo
+- beginning of string must start with 'http'
+- next a single 's' is optional
+- must have '://' next
+- must contain one word character after
+- string must end with a word character
+- return true or false based on whether a match was found
+
+=end
+
+def url?(string)
+  !!string.match(/\Ahttps?:\/\/\S+\z/)
+end
+
+p url?('http://launchschool.com')   == true
+p url?('https://example.com')       == true
+p url?('https://example.com hello') == false
+p url?('   https://example.com')    == false
+```
+
+2. Write a method that returns all of the fields in a haphazardly formatted string. A variety of spaces, tabs, and commas separate the fields, with possibly multiple occurrences of each delimiter.
+
+```ruby
+=begin
+Explicit
+- method returns all fields of a haphazardly formatted string
+- strings boundaries are: spaces, tabs, commas
+- string boundaries can be individual or multiple
+
+Implicit
+- Return value should be an array of the separated strings
+
+DS
+- Strings as an input
+- Array of strings as output
+
+algo
+- split given string at every, or multiple instances of a comma, space, or tab character.
+
+=end
+
+def fields(string)
+  string.split(/[\t, ]+/)
+end
+  
+p fields("Pete,201,Student") == ["Pete", "201", "Student"]
+
+p fields("Pete \t 201    ,  TA") == ["Pete", "201", "TA"]
+
+p fields("Pete \t 201") == ["Pete", "201"]
+
+p fields("Pete \n 201") == ["Pete", "\n", "201"]
+```
+
+3. Write a method that changes the first arithmetic operator (+, -, *, /) in a string to a '?' and returns the resulting string. Don't modify the original string.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one string as an argument
+- change the first arithmetic operator (+, -, *, /) in the string to a '?'
+- then return the resulting string
+- do not modify the original string
+
+Implicit
+- 
+
+DS
+- string input
+- string output
+
+Algo
+- substitute the first arithmetic operator (+, -, *, /) found in the given string with '?'
+- do not mutate the given string
+
+=end
+
+def mystery_math(string)
+  string.sub(/[+\-*\/]/, '?')
+end
+
+p mystery_math('4 + 3 - 5 = 2') == '4 ? 3 - 5 = 2'
+p mystery_math('(4 * 3 + 2) / 7 - 1 = 1') == '(4 ? 3 + 2) / 7 - 1 = 1'
+```
+
+4. Write a method that changes every arithmetic operator (+, -, *, /) to a '?' and returns the resulting string. Don't modify the original string.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one string object as an argument
+- it will change every arithmetic operator (+, -, *, /) to a '?'
+- then, return the resulting string
+- do not modify the given string
+
+Implicit
+- 
+
+DS
+- string input
+- string output
+
+Algo
+- substitute every arithmetic operator (+, -, *, /) found in the given string with '?'
+- do not mutate the given string
+
+=end
+
+def mysterious_math(string)
+  string.gsub(/[+\/*\-]/, '?')
+end
+
+p mysterious_math('4 + 3 - 5 = 2')           == '4 ? 3 ? 5 = 2'
+p mysterious_math('(4 * 3 + 2) / 7 - 1 = 1') == '(4 ? 3 ? 2) ? 7 ? 1 = 1'
+```
+
+5. Write a method that changes the first occurrence of the word apple, blueberry, or cherry in a string to danish.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one string as an argument
+- change the first occurrence of the word berry/blueberry/cherry to 'danish'
+
+Implicit
+- instances of the given trigger words can not be sunstrings of a string, they must have whitespace as a boundary at the front and end
+
+DS
+- string input
+-string output
+
+Algo
+- find the first instance of the trigger words within the given string
+- the instance must have white space as front and end boundaries
+- resplace with 'danish'
+
+=end
+
+def danish(string)
+  string.sub(/\b(apple|cherry|blueberry)\b/, 'danish')
+end
+
+p danish('An apple a day keeps the doctor away') ==  'An danish a day keeps the doctor away'
+p danish('My favorite is blueberry pie') ==  'My favorite is danish pie'
+p danish('The cherry of my eye') ==  'The danish of my eye'
+p danish('apple. cherry. blueberry.') ==  'danish. cherry. blueberry.'
+p danish('I love pineapple') ==  'I love pineapple'
+```
+
+6. Challenge: write a method that changes strings in the date format 2016-06-17 to the format 17.06.2016. You must use a regular expression and should use methods described in this section.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one string as an argument
+- change a string if it is in date format (2016-06-17) to the format (17.06.2016)
+- use a regex
+
+Implicit
+- string formatted like 2016/06/17 will not be formatted
+- the day and the year will be swapped
+
+DS
+- string input
+- string output
+- arrays possibly
+
+Algo
+- if given string contains 4 digits, a '-', 2 digits, a '-', and 2 digits
+  - split string at '-' into array
+  - reverse array
+  - join array with '.'
+  - return string
+- otherwise 
+  -return given string
+
+=end
+
+def format_date(string)
+  return string unless string.match?(/\A[\d]{4}\-[\d]{2}\-[\d]{2}\z/)
+  string.split('-').reverse.join('.')
+end
+
+p format_date('2016-06-17') == '17.06.2016'
+p format_date('2016/06/17') == '2016/06/17' # (no change)
+```
+
+7. Challenge: write a method that changes dates in the format `2016-06-17` or `2016/06/17` to the format `17.06.2016` You must use a regular expression and should use methods described in this section.
+
+```ruby
+=begin
+Explicit
+- write a method that takes one string as an argument
+- change a string if it is in date format (2016-06-17) or (2016/06/17)to the format (17.06.2016)
+- use a regex
+
+Implicit
+- the day and the year will be swapped
+- if a combo of - and / are used, return given string
+
+DS
+- string input
+- string output
+- arrays possibly
+
+Algo
+- if given string contains 4 digits, a '-' or '/', 2 digits, a '-' or '/', and 2 digits
+  - split string at trigger character into array
+  - reverse array
+  - join array with '.'
+  - return string
+- otherwise 
+  -return given string
+=end
+
+def format_date(string)
+   string.gsub(/\b([\d]{4})([\-\/])([\d]{2})\2([\d]{2})\b/, '\4.\3.\1')
+end
+
+p format_date('2016-06-17') == '17.06.2016'
+p format_date('2017/05/03') == '03.05.2017'
+p format_date('2015/01-31') == '2015/01-31' # (no change)
+```
