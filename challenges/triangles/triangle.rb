@@ -52,8 +52,6 @@
 # - #isoscales?
 #   - are exactly 2 sides the same?
 
-# require 'rubocop'
-
 class Triangle
   def initialize(side1, side2, side3)
     @sides = [side1, side2, side3]

@@ -151,7 +151,7 @@ When a block is passed to a method invocation as an argument and the `yield` key
 
 ### Yielding with an Argument
 
-Sometimes a block requires an argument, even though a block itself it an argument being passed to a method invocation. The variable enclosed within the two pipes (`|num|`) is the _block parameter_, which will have a value assigned to it when the `yield` keyword is invoked with an argument passed to it within the method implementation (this implementation is done behind the scenes within the method definition of `Integer#times`). 
+Sometimes a block requires an argument, even though a block itself it an argument being passed to a method invocation. The variable enclosed within the two pipes (`|num|`) is the _block parameter_, which will have a value assigned to it when the `yield` keyword is invoked with an argument passed to it within the method implementation (this implementation is done behind the scenes within the method definition of `Integer#times`).
 
 ```ruby
 3.times { |num| puts num }
@@ -291,7 +291,7 @@ proc1.call # NameError: undefined local variable or method `name' for main:Objec
 proc2.call # NameError: undefined local variable or method `name' for main:Object
 ```
 
-Method definitions can be defined after a closure is defined but must be defined before a closure is called. 
+Method definitions can be defined after a closure is defined but must be defined before a closure is called.
 
 ```ruby
 proc1 = Proc.new { puts "Hi there #{name}" }
@@ -415,7 +415,7 @@ end
 something {} # => Proc
 ```
 
-When the _unary and operator_ (`&`) prepends an argument it checks to see if the argument is a Proc object and then converts it into a block. 
+When the _unary and operator_ (`&`) prepends an argument it checks to see if the argument is a Proc object and then converts it into a block.
 
 ```ruby
 def something
