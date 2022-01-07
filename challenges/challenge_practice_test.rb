@@ -1,107 +1,72 @@
 require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use!
-require_relative 'challenge_practice'
+require_relative 'anagram'
 
-class TriangleTest < Minitest::Test
-  def test_equilateral_equal_sides
-    triangle = Triangle.new(2, 2, 2)
-    assert_equal 'equilateral', triangle.kind
+class AnagramTest < Minitest::Test
+  def test_no_matches
+    detector = Anagram.new('diaper')
+    assert_equal [], detector.match(%w(hello world zombies pants))
+  end
+  
+  def test_detect_simple_anagram 
+    # skip
+    detector = Anagram.new('ant')
+    anagrams = detector.match(%w(tan stand at))
+    assert_equal ['tan'], anagrams
   end
 
-  def test_larger_equilateral_equal_sides
+  def test_detect_multiple_anagrams
     # skip
-    triangle = Triangle.new(10, 10, 10)
-    assert_equal 'equilateral', triangle.kind
+    detector = Anagram.new('master')
+    anagrams = detector.match(%w(stream pigeon maters))
+    assert_equal %w(maters stream), anagrams.sort
   end
 
-  def test_isosceles_last_two_sides_equal
+  def test_does_not_confuse_different_duplicates
     # skip
-    triangle = Triangle.new(3, 4, 4)
-    assert_equal 'isosceles', triangle.kind
+    detector = Anagram.new('galea')
+    assert_equal [], detector.match(['eagle'])
   end
 
-  def test_isosceles_first_last_sides_equal
+  def test_identical_word_is_not_anagram
     # skip
-    triangle = Triangle.new(4, 3, 4)
-    assert_equal 'isosceles', triangle.kind
+    detector = Anagram.new('corn')
+    anagrams = detector.match %w(corn dark Corn rank CORN cron park)
+    assert_equal ['cron'], anagrams
   end
 
-  def test_isosceles_first_two_sides_equal
+  def test_eliminate_anagrams_with_same_checksum
     # skip
-    triangle = Triangle.new(4, 4, 3)
-    assert_equal 'isosceles', triangle.kind
+    detector = Anagram.new('mass')
+    assert_equal [], detector.match(['last'])
   end
 
-  def test_isosceles_exactly_two_sides_equal
+  def test_eliminate_anagram_subsets
     # skip
-    triangle = Triangle.new(10, 10, 2)
-    assert_equal 'isosceles', triangle.kind
+    detector = Anagram.new('good')
+    assert_equal [], detector.match(%w(dog goody))
   end
 
-  def test_scalene_no_equal_sides
+  def test_detect_anagram
     # skip
-    triangle = Triangle.new(3, 4, 5)
-    assert_equal 'scalene', triangle.kind
+    detector = Anagram.new('listen')
+    anagrams = detector.match %w(enlists google inlets banana)
+    assert_equal ['inlets'], anagrams
   end
 
-  def test_scalene_larger_no_equal_sides
+  def test_multiple_anagrams
     # skip
-    triangle = Triangle.new(10, 11, 12)
-    assert_equal 'scalene', triangle.kind
+    detector = Anagram.new('allergy')
+    anagrams =
+      detector.match %w( gallery ballerina regally clergy largely leading)
+    assert_equal %w(gallery largely regally), anagrams.sort
   end
 
-  def test_scalene_no_equal_sides_descending
+  def test_anagrams_are_case_insensitive
     # skip
-    triangle = Triangle.new(5, 4, 2)
-    assert_equal 'scalene', triangle.kind
-  end
-
-  def test_small_triangles_are_legal
-    # skip
-    triangle = Triangle.new(0.4, 0.6, 0.3)
-    assert_equal 'scalene', triangle.kind
-  end
-
-  def test_no_size_is_illegal
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(0, 0, 0)
-    end
-  end
-
-  def test_negative_size_is_illegal
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(3, 4, -5)
-    end
-  end
-
-  def test_size_inequality_is_illegal
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(1, 1, 3)
-    end
-  end
-
-  def test_size_inequality_is_illegal_2
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(7, 3, 2)
-    end
-  end
-
-  def test_size_inequality_is_illegal_3
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(10, 1, 3)
-    end
-  end
-
-  def test_size_inequality_is_illegal_4
-    # skip
-    assert_raises(ArgumentError) do
-      triangle = Triangle.new(1, 1, 2)
-    end
+    detector = Anagram.new('Orchestra')
+    anagrams = detector.match %w(cashregister Carthorse radishes)
+    assert_equal ['Carthorse'], anagrams
   end
 end
