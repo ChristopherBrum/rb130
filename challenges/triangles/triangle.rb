@@ -73,10 +73,8 @@ class Triangle
   attr_reader :sides
 
   def validate_sides
-    if side_length_zero_or_neg? ||
-       two_sides_shorter_than_one?
-      raise(ArgumentError)
-    end
+    raise(ArgumentError) if side_length_zero_or_neg? ||
+                            two_sides_shorter_than_one?
   end
 
   def side_length_zero_or_neg?
