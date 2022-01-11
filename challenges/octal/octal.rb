@@ -65,10 +65,13 @@ Algo(s)
 - return 0 unless valid_octal?
 - convert given string to integer and split into array of digits
 - initialize counter to -1
+- initialize decimal_arr
 - loop through digits
-  - multiply current num by 8 to the power of (absolute value of counter - 1)
+  - multiply current num by 8 to the power of (absolute value of counter - 1) and
+  - push to decimal_arr
   - increment counter
-- find sum of arr and return
+  - break if absolute value of counter less than or equal to array size
+- find sum of decimal_arr and return
 
 - valid_octal?
   - only contains digits 0-7?
