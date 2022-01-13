@@ -47,17 +47,51 @@ Algo(s)
   - split string into array of characters
   - iterate through given array of string characters
     - create counter set to 0
+    - inisalzie temp_arr to empty array
     - while counter is less than integer passed in
-      - push current char to a temp_str
-    - push string to empty array
+      - push current char to a temp_arr
+      - increment index and counter by 1
+      - break if counter greater than arr size and if arr element is nil
+    - push temp_arr to empty array if temp_arr size equals the given integer
   - return array
 
-- helper method --> filter_subs(array) --> array
-  - iterate through array using transformation
-    - if sub chars is the same as sub chars sorted?
-      - sub split into array of characters converted to integers
-    - else
-      - nil
-  - remove all nil values form array and return
-
 =end
+
+class Series
+  def initialize(str_number)
+    @str_number = str_number
+  end
+
+  def slices(sub_size)
+    subs = []
+    validate_sub_size(sub_size)
+
+    str_number.chars.each_with_index do |_, index|
+      temp_arr = group_consecutive(index, sub_size)
+      subs << temp_arr if temp_arr.size == sub_size
+    end
+
+    subs
+  end
+
+  private
+
+  attr_reader :str_number
+
+  def validate_sub_size(sub_size)
+    raise(ArgumentError) if sub_size > str_number.size
+  end
+
+  def group_consecutive(index, sub_size)
+    counter = 0
+    temp_arr = []
+
+    while counter < sub_size && !str_number[index].nil?
+      temp_arr << str_number[index].to_i
+      counter += 1
+      index += 1
+    end
+
+    temp_arr
+  end
+end
