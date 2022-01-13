@@ -4,13 +4,13 @@
 
 ### Closures, binding, and scope
 
-**What is a closure?**
+**What is a closure?**\
 A closure is a programming concept where you can save a "chunk of code" and execute it at a later time. A closure creates "bindings" with all artifacts within scope of the closure at creation and these bindings can be referenced when the closure is later executed. A closure can be created by a blocks, Proc or lambda.
 
-**What is a binding?**
+**What is a binding?**\
 During creation of a closure a binding is created around all artifacts(methods, local variables, constants, etc.) that are within scope of the closure. These bindings can be referenced when the closure is executed, even if the artifacts are not within scope at the point of execution. The values associated with the artifacts can also be modified after the closure/binding is created and the updated value will be accessible by the block when invoked.
 
-**What are Proc's and lambdas? How are they different?**
+**What are Proc's and lambdas? How are they different?**\
 Proc's and lambdas are both Proc objects that we can use to encapsulate a block of code and bind its surrounding artifacts to be passed around and executed later, but they differ by:
 
 - Proc's have lenient arity and lambdas have strict arity.
@@ -20,7 +20,7 @@ Proc's and lambdas are both Proc objects that we can use to encapsulate a block 
   - a lambda will return to the method execution
   - a proc will return out of the method execution
 
-**How do closures interact with variables scope?**
+**How do closures interact with variables scope?**\
 When a closure is created any artifacts within scope, including variables, will have a binding created with the closure which allows the closure to access the variable when it is executed later in the program, even if the variable is not within scope where the closure is executed. The variable can be updated after the closure is created but before the closure is executed and the closure will have access to this updated value.
 
 ### How blocks work, and when we want to use them
@@ -58,7 +58,7 @@ Blocks are used for two main purposes:
 
 1. To defer some implementation details to the method caller.
   
-- The _method implementer_ may choose to write a method definition more generic way, which allows the _method caller_ to customize the functionality of the method by passing in a block at invocation.
+    The _method implementer_ may choose to write a method definition more generic way, which allows the _method caller_ to customize the functionality of the method by passing in a block at invocation.
 
 ```ruby
 def each(array)
@@ -77,7 +77,7 @@ each(arr) { |element| puts "I'm element #{element}!" }
 
 2. Methods perform some before and after actions/Sandwich code.
 
-- Sometimes a method is written with the purpose of performing a task before and after a chunk of code is executed, for instance; timing the speed of execution. In this situation the _method implementor_ can write a method that performs some functionality before and after yielding to a block that will be passed in by the _method caller_. In this circumstance the block passed in doesn't matter to the method implementor.
+    Sometimes a method is written with the purpose of performing a task before and after a chunk of code is executed, for instance; timing the speed of execution. In this situation the _method implementor_ can write a method that performs some functionality before and after yielding to a block that will be passed in by the _method caller_. In this circumstance the block passed in doesn't matter to the method implementor.
 
 **How do we yield to a block?**
 
@@ -88,7 +88,7 @@ each(arr) { |element| puts "I'm element #{element}!" }
 - Then the code within the method definition will resume executing code after the `yield` keyword.
 - `yield` can take arguments that will be passed to the block and assigned to block parameters.
 
-**What's the main difference between blocks and Proc's?**
+**What's the main difference between blocks and Proc's?**\
 A block is not an object but a Proc is, therefore a block cannot be assigned to a variable and passed around. To do so it must be converted to a Proc or lambda.
 
 **What errors and pitfalls can arise from passing in a block at method invocation and how do we avoid them?**
