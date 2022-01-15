@@ -1,9 +1,9 @@
 # STUDY GUIDE
 
 - [Blocks](#)
-  - [Closures, binding, and scope](#)
-  - [How blocks work, and when we want to use them.](#)
-  - [Blocks and variable scope](#)
+  - [Closures, Binding and Scope](#closures-binding-and-scope)
+  - [How blocks work and when we want to use them](#how-blocks-work-and-when-we-want-to-use-them)
+  - [Blocks and variable scope](#blocks-and-variable-scope)
   - [Write methods that use blocks and procs](#)
   - [Understand that methods and blocks can return chunks of code (closures)](#)
   - [Methods with an explicit block parameter](#)
@@ -26,70 +26,142 @@
 
 ### Closures, binding, and scope
 
-**What is a closure?**
+**_Closure_**
 
 - A closure is a programming concept where you can save a "chunk of code" and execute it at a later time.
 - A closure creates "bindings" with all artifacts within scope of the closure at creation and these bindings can be referenced when the closure is later executed.
 - A closure can be created by a blocks, Proc or lambda.
 
-**What is a binding?**
+**_Binding_**
 
 - During the creation of a closure a binding is created around all artifacts(methods, local variables, constants, etc.) that are within scope of the closure.
 - These bindings can be referenced when the closure is executed, even if the artifacts are not within scope at the point of execution.
 - The values associated with the artifacts can also be modified after the closure/binding is created and the updated value will be accessible by the block when invoked.
 
-**What are Proc's and lambdas? How are they different?**
+**_Scope_**
 
-Proc's and lambdas are both Proc objects that we can use to encapsulate a block of code and bind its surrounding artifacts to be passed around and executed later, but they differ by:
-
-- Proc's have lenient arity and lambdas have strict arity.
-- Lambdas cannot use the class method `new` to instantiate a new instance.
-- Lambdas have an alternative arrow syntax for creating an instance.
-- If explicitly returned from within a method...
-  - a lambda will return to the method execution
-  - a proc will return out of the method execution
-
-**How do closures interact with variables scope?**
-
-- When a closure is created any artifacts within scope, including variables, will have a binding created with the closure which allows the closure to access the variable when it is executed later in the program, even if the variable is not within scope where the closure is executed.
-- The variable can be updated after the closure is created but before the closure is executed and the closure will have access to this updated value.
-
-### How blocks work, and when we want to use them
-
-**What are blocks?**
-
-- Blocks are chunks of code contained within `do...end` or `{...}`.
-- These chunks of code can be passed implicitly into _any_ method invocation as an argument.
-- Blocks can also take arguments, by defining _block parameters_.
-- Blocks are not objects, so they _cannot_ be assigned to variables and passed around.
-- A block will be executed if the `yield` keyword is encountered within the method definition.
+- The `do..end` or `{..}` that delineates a block also creates a separate inner and outer scope. Objects defined outside of the scope are accessible inside the scope, but object defined inside the scope are not accessible outside.
+- Local variables must be defined prior to the creation of a closure to be included in its binding.
+- Methods can be defined before or after a closure but before the closure is invoked to be included in its binding, and thus retrievable upon execution.
+- Closure allows the artifacts within its binding to be updated after the closure has been created but before the closure is executed.
 
 ```ruby
-arr = [1, 2, 3, 4]
+name = 'Chris'
 
-arr.select do |num| # 
-  num.even?        
-end                
+def age 
+  25
+end
 
-# => [2, 4]
-```
+proc_obj = proc { puts "I'm #{name} and I'm #{age}." } # Proc creation
 
-The block by itself:
-
-```ruby
-
-           do |num| # the block begins at `do` and has 1 block parameter `num`
-  num.even?         # code executed when the block is executed
-end                 # the block end at `end`
-```
-
-**Why do we need blocks?**
-
-Blocks are used for two main purposes:
-
-1. To defer some implementation details to the method caller.
+p proc_obj.object_id # 60
+proc_obj.call        # I'm Chris and I'm 25. (Proc execution)
   
-    The _method implementer_ may choose to write a method definition more generic way, which allows the _method caller_ to customize the functionality of the method by passing in a block at invocation.
+name = 'Mark'
+  
+def age
+  33
+end
+  
+p proc_obj.object_id # 60
+proc_obj.call        # I'm Mark and I'm 33. (Proc execution)
+```
+
+### How blocks work and when we want to use them
+
+**_Blocks, Proc's and Lambdas_**
+
+Blocks
+
+- Is not an object.
+- Blocks can be implicitly passed to all methods.
+- A block will be ignored if:
+  - the block is not yielded using the `yield` keyword.
+  - the block is not converted to a Proc object
+- Blocks can take arguments
+  - within the block between the `| |` pipes they're called _block parameters_
+  - within the body of the block they're called _block local variables_
+- Blocks have lenient arity.
+  - no error raised if number of arguments and parameters are not equal.
+  - extra parameters will default to `nil`.
+  - extra arguments will be ignored.
+- Methods that expect a block will raise a `LocalJumpError` if no block is passed to a method invocation.
+  - A guard clause can check whether a block has been passed in or not and avoid raising a `LocalJumpError`.
+- A block is a way of implementing the idea of a closure. It's an anonymous chunk of code wrapped up in `{..}` or `do..end`.
+
+```ruby
+def say_something
+  puts "I just wanted to tell you #{yield}"
+end
+
+def say_hi
+  teacher = "Mrs. Jacob"
+  puts yield(teacher) if block_given?
+end
+
+say_something { "you're smart." } # I just wanted to tell you you're smart.
+
+say_something # raises LocalJumpError
+
+say_hi { |teacher| "Good morning #{teacher}." } # Good morning Mrs. Jacob.
+
+say_hi { |teacher, friend| "Good morning #{teacher}." } # Good morning Mrs. Jacob.
+
+say_hi { "Good morning teacher." } # Good morning teacher.
+
+say_hi # nil
+```
+
+Proc's
+
+- Is an object and has it's own class.
+- Is a special type of object that can encapsulate a block, or "chunk of code", within an object to be passed around and executed at a later point.
+- Can be assigned to a local variable and passed around.
+- Can be returned by a method and reused.
+- Blocks have lenient arity.
+- When returned from within a method will return out of the method.
+
+```ruby
+name = "Chris"
+proc1 = proc { puts "Hi there #{name}" }
+
+proc1.call # Hi there Chris
+name = "Adrienne"
+proc1.call # Hi there Adrienne
+
+proc2 = proc { |age| puts "#{name} is #{age} years old." }
+
+proc2.call # Adrienne is  years old. (no ArgumentError)
+proc2.call(25) # Adrienne is 25 years old.
+```
+
+Lambdas
+
+- Lambdas are a special type of Proc object that can encapsulate a block and create a closure.
+- Is an object but doesn't have it's own class.
+- Can be assigned to a variable and passed around.
+- Cannot be instantiated with the `::new` class method, but can use arrow syntax.
+- Has strict arity.
+- When returned from within a method will return to the method.
+
+```ruby
+lambda1 = lambda { puts "Hi there" }
+
+lambda2 = -> (name) { puts "My name is #{name}" }
+
+puts lambda1 # #<Proc:0x000055677d485c80 solution.rb:1 (lambda)>
+puts lambda2 # #<Proc:0x000055677d485c58 solution.rb:3 (lambda)>
+lambda1.call # Hi there
+lambda2.call # ArgumentError
+lambda2.call("Mitch") # My name is Mitch
+
+```
+
+**_Blocks are used for two main purposes_**
+
+- To defer some implementation details to the method caller.
+
+  The _method implementer_ may choose to write a method definition more generic way, which allows the _method caller_ to customize the functionality of the method by passing in a block at invocation.
 
 ```ruby
 def each(array)
@@ -106,49 +178,69 @@ each(arr) { |element| puts "I'm element #{element}!" }
 # I'm element 10!
 ```
 
-2. Methods perform some before and after actions/Sandwich code.
+- Methods perform some before and after actions/Sandwich code.
 
-    Sometimes a method is written with the purpose of performing a task before and after a chunk of code is executed, for instance; timing the speed of execution. In this situation the _method implementor_ can write a method that performs some functionality before and after yielding to a block that will be passed in by the _method caller_. In this circumstance the block passed in doesn't matter to the method implementor.
+  Sometimes a method is written with the purpose of performing a task before and after a chunk of code is executed, for instance; timing the speed of execution. In this situation the _method implementor_ can write a method that performs some functionality before and after yielding to a block that will be passed in by the _method caller_. In this circumstance the block passed in doesn't matter to the method implementor.
 
-**How do we yield to a block?**
+**_Yielding to a block_**
 
-- When a block is passed in as an argument at method invocation the block will not be executed unless the   `yield` keyword is called within the method implementation.
+- When a block is passed in as an argument at method invocation the block will not be executed unless the `yield` keyword is called within the method implementation.
 - At invocation, the code within the method definition will execute line by line.
 - When it encounters the `yield` keyword it _yields_ to the block, meaning the execution of code jumps to the block, then executes the code within the block line by line.
 - Once the block has finished executing the block will return the last thing executed.
 - Then the code within the method definition will resume executing code after the `yield` keyword.
 - `yield` can take arguments that will be passed to the block and assigned to block parameters.
 
-**What's the main difference between blocks and Proc's?**
+```ruby
+def say_something
+  puts "I just wanted to say #{yield}"
+end
 
-- A block is not an object but a Proc is.
-- Therefore a block cannot be assigned to a variable and passed around.
-- To do so it must be converted to a Proc or lambda.
+say_something { "that I really have to pee." }
+# I just wanted to say that I really have to pee.
 
-**What errors and pitfalls can arise from passing in a block at method invocation and how do we avoid them?**
+def say_something
+  quote = "I love you"
+  puts "I just wanted to say #{yield(quote)}"
+end
+
+say_something do |quote|
+  if quote
+    quote
+  else
+    "that I really have to pee."
+  end
+end
+
+# I just wanted to say I love you.
+```
+
+**_Errors/Pitfalls from passing a block at method invocation_**
 
 - If the `yield` keyword is used with the intention of yielding to a block passed in as an argument, but not block is passed in, Ruby with throw a `LocalJumpError` when it executes `yield` and can't find a block.
 - The `Kernel#block_given?` method can be used in conjunction with a conditional statement to bypass the `yield` keyword is a block has not been passed in at invocation.
 
 - Variable shadowing can occur in situations where the block parameter is the same as a local variable of the same name outside of the block but within scope.
 
-**How do we utilize the return value of a block?**
-
-- Blocks return the last evaluated expression within itself.
-- Therefore, if yielding to a block with the `yield` keyword, the return value of the block can be captured by a variable initialized to its return value.
-
 ```ruby
-def add_title(name)
-  title = yield.capitalize + ' ' 
-  title + name
+def say_something
+  puts "I just wanted to say #{yield}"
 end
 
-p add_title('Chris Brum') { 'mr' }
+# say_something # LocalJumpError
 
-# Mr. Chris Brum
+def say_something
+  if block_given?
+    puts "I just wanted to say #{yield}"
+  else
+    puts "I have nothing to say"
+  end
+end
+
+say_something # I have nothing to say
 ```
 
-**How can methods that take a block pass pieces of data to that block?**
+**_Passing data to a block from within a method_**
 
 - When using the `yield` keyword to execute a block we can pass in arguments.
 - These values will be assigned to any block parameters defined within the block.
@@ -181,7 +273,44 @@ iterate(arr) { |letter| puts letter.capitalize * 5 }
 
 ### Write methods that use blocks and proc's
 
+
+
+**_Block and Proc Differences_**
+
+- A block is not an object but a Proc is.
+- Therefore a block cannot be assigned to a variable and passed around.
+- To do so it must be converted to a Proc or lambda.
+
+**_Proc and Lambda Differences_**
+
+Proc's and lambdas are both Proc objects that we can use to encapsulate a block of code and bind its surrounding artifacts to be passed around and executed later, but they differ by:
+
+- Proc's have lenient arity and lambdas have strict arity.
+- Lambdas cannot use the class method `new` to instantiate a new instance.
+- Lambdas have an alternative arrow syntax for creating an instance.
+- If explicitly returned from within a method...
+  - a lambda will return to the method execution
+  - a proc will return out of the method execution
+
 ### Understand that methods and blocks can return chunks of code (closures)
+
+**_Utilizing the return value of a block_**
+
+- Blocks return the last evaluated expression within itself.
+- Therefore, if yielding to a block with the `yield` keyword, the return value of the block can be captured by a variable initialized to its return value.
+
+```ruby
+def add_title(name)
+  title = yield.capitalize + ' ' 
+  title + name
+end
+
+p add_title('Chris Brum') { 'mr' }
+
+# Mr. Chris Brum
+```
+
+**_Utilizing the return value of a Proc or Lambda_**
 
 ### Methods with an explicit block parameter
 

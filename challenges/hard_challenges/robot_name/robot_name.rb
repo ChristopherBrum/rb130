@@ -62,10 +62,6 @@ Algo(s)
 class Robot
   @@used_names = []
 
-  def initialize
-    @name = nil
-  end
-
   def name
     @name.nil? ? @name = generate_name : @name
   end
