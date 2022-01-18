@@ -314,9 +314,45 @@ p add_title('Chris Brum') { 'mr' }
 
 ### Methods with an explicit block parameter
 
+- To make a method take an explicit block the unary & operator (`&`) must prepend a method parameter name in the method definition.
+- The unary & operator used in the method definition will take a block passed in as an argument and convert it a `Proc` object and initialize it to the method parameter.
+- The unary and only needs to prepend the method parameter, it does not need to prepend the variable when used within the method body.
+- If an explicit block is defined in a method definition but not block is passed in the parameter will be defined to `nil`.
+
+```ruby
+def call_me (&some_code)
+  some_code
+end
+
+p call_me # outputs nil
+
+def call_again (&some_code)
+  some_code.call
+end
+
+# p call_last # NoMethodError: undefined method `call' for nil:NilClass
+
+def call_last (&some_code)
+  puts "method call"
+  puts some_code
+  some_code.call
+end
+
+call_last { puts "block called" }
+# method call
+# #<Proc:0x000055b292b55eb0 solution.rb:19>
+# block called
+# => nil
+```
+
 ### Arguments and return values with blocks
 
+- Blocks have _lenient arity_, which means an error will not be raised if the number of arguments and parameters do not match.
+- 
+
 ### When can you pass a block to a method
+
+All methods in Ruby can take an implicit block.
 
 ### &:symbol
 
