@@ -348,13 +348,54 @@ call_last { puts "block called" }
 ### Arguments and return values with blocks
 
 - Blocks have _lenient arity_, which means an error will not be raised if the number of arguments and parameters do not match.
-- 
+- To pass an argument to a block simply pass them in with the `yield` keyword.
+- Just like how a method returns the last evaluated expression a block also return the last evaluated expression within itself. This means that when a method yields to a block the return value of the block can be captured and saved to a local variable.
+
+```ruby
+def say_something
+  name = "Richard"
+  yield(name)
+end
+
+say_something { |name| puts "#{name} says hello" }
+# Richard says hello
+say_something { |name, place| puts "#{name} says hello and will see you at #{place}" }
+# Richard says hello and will see you at
+
+def say_goodbye
+  name = yield
+  puts "Goodbye #{name}"
+end
+
+say_goodbye { 'Reggie' }
+# Goodbye Reggie
+```
 
 ### When can you pass a block to a method
 
 All methods in Ruby can take an implicit block.
 
 ### &:symbol
+
+- When you prepend the unary & operator to an argument passed in at method invocation it first accesses whether the object passed to it is a `Proc` object.
+- If it is not a `Proc` object it tries to convert it one by calling the `#to_proc` method on it.
+- If the argument passed in is of the `Symbol` class the `Symbol#to_proc` method is called, which looks for a method defined by the symbol name and converts it to a `Proc` object.
+- Once converted to a `Proc`, it is then converted to a block and passed into the method invocation.
+- If no method is found by the symbol name a `NoMethodError` is raised.
+
+```ruby
+[1, 2, 3, 4].map(&:poop) # NoMethodError rasied because there's no #poop method
+
+[1, 2, 3, 4].map(&:to_s)
+# => ["1", "2", "3", "4"]
+
+# The code above finds the #to_s method,
+# converts it to a Proc object, 
+# then to a block and passes it in to the method invocation as an argument.
+
+# Basically it converts it to this:
+[1, 2, 3, 4].map { |x| x.to_s }
+```
 
 ### Arity of blocks and methods
 
@@ -382,9 +423,28 @@ Arity refers to the rules regarding the number of arguments that must be passed 
 
 ### Purpose of core tools
 
+**_Gems_**
+
+- Packages of code that you download, install, and use with your Ruby projects.
+
+**_Ruby Version Managers_**
+
+- A program to download and install on your system that manages all the different versions, and the different utilities included with Ruby for your projects.
+- `RVM` and `rbenv` are the most widely used.
+
+**_Bundler_**
+
+- The most popular dependency manager for Ruby projects.
+- A RubyGem that manages all gems for your Ruby projects.
+
+**_Rake_**
+
+- A RubyGem that automates tasks.
+- Comes standard with all modern Ruby installations.
+- Uses a DSL.
+- Use `bundle exec rake` with rake commands.
+
 ### Gemfiles
 
-What is Symbol#to_proc and how is it used?
-How do we specific a block argument explicitly?
-How can we return a Proc from a method or block?
-What is arity? What kinds of things in Ruby exhibit arity? Give explicit examples.
+- The `Gemfile` is where you manually write out the gems and their versions required for your project.
+- After running the `bundle install` command a `Gemfile.lock` is created and all gems and their specific versions and dependencies are automatically included by bundler.
