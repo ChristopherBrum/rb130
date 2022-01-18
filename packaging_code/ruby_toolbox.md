@@ -48,7 +48,7 @@ What gets installed with Ruby?
 ## Gems
 
 - With a standard Ruby installation both Ruby's core library and standard library are made available.
-  - Whats the difference between these two?
+
 
 ### What are gems
 
