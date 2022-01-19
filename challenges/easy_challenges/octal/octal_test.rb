@@ -77,4 +77,11 @@ class OctalTest < Minitest::Test
     # skip
     assert_equal 0, Octal.new('234abc').to_decimal
   end
+
+  def test_equality
+    oct1 = Octal.new('1')
+    oct2 = Octal.new('1')
+
+    assert_equal(oct1, oct2)
+  end
 end
